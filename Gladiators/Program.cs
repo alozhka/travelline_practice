@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Gladiators.Models.Armors;
 using Gladiators.Models.Fighters;
 using Gladiators.Models.Races;
 
@@ -9,7 +10,7 @@ public static class Program
     public static void Main()
     {
         var firstFighter = new Fighter( "Jane", new Human() );
-        var secondFighter = new Fighter( "Viktor", new Human() );
+        var secondFighter = new Fighter( "Viktor", new Human(), new ChainMail() );
 
         var master = new GameMaster();
         var winner = master.PlayAndGetWinner( firstFighter, secondFighter );

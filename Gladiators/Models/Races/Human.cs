@@ -2,10 +2,10 @@
 {
     public class Human : IRace
     {
-        public int Damage { get; } = 11;
+        public int Damage => 11;
 
-        public int Health { get; } = 100;
+        public int Health => 100;
 
-        public int Armor { get; } = 10;
+        public int Armor => 3;
     }
 }
