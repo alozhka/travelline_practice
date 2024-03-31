@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Gladiators.Models.Fighters;
+﻿using Gladiators.Models.Fighters;
 using Gladiators.Service;
 
 namespace Gladiators;
@@ -34,8 +33,8 @@ public static class Program
 
     private static void Fight()
     {
-        IFighter firstFighter = FighterService.CreateByConsole();
-        IFighter secondFighter = FighterService.CreateByConsole();
+        IFighter firstFighter = FighterFactory.CreateByConsole();
+        IFighter secondFighter = FighterFactory.CreateByConsole();
 
         Console.WriteLine($"{firstFighter}\n{secondFighter}");
         

@@ -10,5 +10,5 @@ public static class Constants
 
 public static class ParseRegexes
 {
-    public const string Name = "^[a-zA-Zа-яА-Яё]+$";
+    public const string Name = "^[a-zA-Zа-яА-ЯёЁ]+$";
 }

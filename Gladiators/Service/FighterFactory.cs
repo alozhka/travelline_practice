@@ -8,7 +8,7 @@ using Gladiators.Models.Weapons;
 
 namespace Gladiators.Service;
 
-public static class FighterService
+public static class FighterFactory
 {
     public static IFighter CreateByConsole()
     {

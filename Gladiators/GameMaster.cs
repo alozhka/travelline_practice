@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Gladiators.Models.Fighters;
 
 namespace Gladiators;
