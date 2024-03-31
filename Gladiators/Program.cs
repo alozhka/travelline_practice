@@ -5,6 +5,8 @@ namespace Gladiators;
 
 public static class Program
 {
+
+    private static List<IFighter> Fighters { get; } = [];
     public static void Main()
     {
         ShowMenu();
@@ -34,18 +36,15 @@ public static class Program
 
     private static void Add()
     {
-        FighterFactory.CreateByConsole();
+        Fighters.Add(FighterFactory.CreateByConsole());
     }
     private static void Fight()
     {
-        IFighter firstFighter = FighterFactory.CreateByConsole();
-        IFighter secondFighter = FighterFactory.CreateByConsole();
-
-        Console.WriteLine($"{firstFighter}\n{secondFighter}");
+        Console.WriteLine(string.Join("\n", Fighters));
         
-        IFighter winner = GameMaster.PlayAndGetWinner( firstFighter, secondFighter );
+        //IFighter winner = GameMaster.PlayAndGetWinner( firstFighter, secondFighter );
 
-        Console.WriteLine( $"\nВыигрывает {winner.Name}" );
+        //Console.WriteLine( $"\nВыигрывает {winner.Name}" );
     }
 
     private static void ShowMenu()
