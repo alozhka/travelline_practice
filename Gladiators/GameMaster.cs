@@ -3,11 +3,11 @@ using Gladiators.Models.Fighters;
 
 namespace Gladiators;
 
-internal class GameMaster
+internal static class GameMaster
 {
     public static IFighter PlayAndGetWinner( IFighter firstFighter, IFighter secondFighter )
     {
-        var round = 0;
+        int round = 0;
         while ( true )
         {
             Console.WriteLine( $"Раунд {++round}." );
@@ -26,6 +26,7 @@ internal class GameMaster
 
             Console.WriteLine();
         }
+
     }
 
     private static bool FightAndCheckIfOpponentDead( IFighter roundOwner, IFighter opponent )

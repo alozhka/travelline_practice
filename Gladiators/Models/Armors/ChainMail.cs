@@ -2,5 +2,5 @@ namespace Gladiators.Models.Armors;
 
 public class ChainMail : IArmor
 {
-    public int Armor => 3;
+    public int Armor => 5;
 }
