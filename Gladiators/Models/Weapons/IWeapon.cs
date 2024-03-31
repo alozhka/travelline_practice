@@ -1,6 +1,6 @@
 ﻿namespace Gladiators.Models.Weapons
 {
-    public interface IWeapon
+    public interface IWeapon : IModel
     {
         int Damage { get; }
     }

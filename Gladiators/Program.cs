@@ -1,5 +1,5 @@
-﻿using Gladiators.Models.Fighters;
-using Gladiators.Service;
+﻿using Gladiators.Factory;
+using Gladiators.Models.Fighters;
 
 namespace Gladiators;
 
@@ -14,11 +14,12 @@ public static class Program
         {
             switch (command)
             {
-                case "Add":
+                case "1":
+                    Add();
                     break;
-                case "Remove":
+                case "2":
                     break;
-                case "Fight":
+                case "3":
                     Fight();
                     break;
                 default:
@@ -31,6 +32,10 @@ public static class Program
         }
     }
 
+    private static void Add()
+    {
+        FighterFactory.CreateByConsole();
+    }
     private static void Fight()
     {
         IFighter firstFighter = FighterFactory.CreateByConsole();

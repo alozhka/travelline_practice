@@ -13,6 +13,8 @@ namespace Gladiators.Models.Fighters
         public int CurrentDamage { get; }
 
         public string Name { get; }
+        
+        public int Initiative { get; }
 
         public IWeapon Weapon { get; }
         public IRace Race { get; }

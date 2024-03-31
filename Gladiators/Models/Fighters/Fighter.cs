@@ -14,6 +14,7 @@ namespace Gladiators.Models.Fighters
         public int CurrentDamage { get; }
 
         public string Name { get; }
+        public int Initiative { get; }
 
         public IRace Race { get; }
         public IWeapon Weapon { get; }
@@ -32,6 +33,8 @@ namespace Gladiators.Models.Fighters
             CurrentHealth = MaxHealth;
             CurrentDamage = Race.Damage + Class.Damage + Weapon.Damage;
             CurrentArmor = Armor.Armor + Race.Armor;
+            // TODO: implement the initiative via races and classes
+            Initiative = 0;
         }
 
         public int CalculateDamage()

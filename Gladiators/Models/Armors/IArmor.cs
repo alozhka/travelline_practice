@@ -1,6 +1,6 @@
 ﻿namespace Gladiators.Models.Armors
 {
-    public interface IArmor
+    public interface IArmor : IModel
     {
         int Armor { get; }
     }
