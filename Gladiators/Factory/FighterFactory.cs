@@ -45,8 +45,9 @@ public static class FighterFactory
         {
             Console.WriteLine( $"""
                                 Выберите из списка {modelsType}:
-                                {models.Select((model, index) =>$"{index}. {model.Name}\n")}
+                                {string.Join("\n", models.Select((model, index) =>$"{index}. {model.Name}"))}
                                 """);
+            
             string? modelStr = Console.ReadLine();
             if (!int.TryParse( modelStr, out int modelInt) || modelInt < 0 || modelInt > models.Count )
             {
