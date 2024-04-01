@@ -1,5 +1,7 @@
-﻿using Gladiators.Factory;
+﻿using System.Text.RegularExpressions;
+using Gladiators.Factory;
 using Gladiators.Models.Fighters;
+using Gladiators.Service;
 
 namespace Gladiators;
 
@@ -17,9 +19,10 @@ public static class Program
             switch (command)
             {
                 case "1":
-                    Add();
+                    AddFighter();
                     break;
                 case "2":
+                    RemoveFighter();
                     break;
                 case "3":
                     Fight();
@@ -34,9 +37,25 @@ public static class Program
         }
     }
 
-    private static void Add()
+    private static void AddFighter()
     {
         Fighters.Add(FighterFactory.CreateByConsole());
+    }
+    private static void RemoveFighter()
+    {
+        string name = FighterFactory.GetName();
+
+        int index = Fighters.FindIndex(f => f.Name == name);
+
+        if (index == -1)
+        {
+            Console.WriteLine("Такого бойца не существует!");
+        }
+        else
+        {
+            Fighters.RemoveAt(index);
+            Console.WriteLine("Успешно");
+        }
     }
     private static void Fight()
     {

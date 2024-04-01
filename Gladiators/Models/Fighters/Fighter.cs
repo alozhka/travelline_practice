@@ -3,6 +3,7 @@ using Gladiators.Models.Armors;
 using Gladiators.Models.Class;
 using Gladiators.Models.Races;
 using Gladiators.Models.Weapons;
+using Gladiators.Service;
 
 namespace Gladiators.Models.Fighters
 {
@@ -33,16 +34,15 @@ namespace Gladiators.Models.Fighters
             CurrentHealth = MaxHealth;
             CurrentDamage = Race.Damage + Class.Damage + Weapon.Damage;
             CurrentArmor = Armor.Armor + Race.Armor;
-            // TODO: implement the initiative via races and classes
-            Initiative = 0;
+            Initiative = Race.Initiative + Class.Initiative;
         }
 
         public int CalculateDamage()
         {
-            decimal damageMul = (Random.Shared.Next(Constants.DamagePercentLow, Constants.DamagePercentHigh) + 1) / 100m;
-            if (Random.Shared.Next(100) < Constants.CriticalDamagePercent)
+            decimal damageMul = RandomService.ComputeDamageMul();
+            if (RandomService.IsCriticalDamage())
             {
-                Console.WriteLine("Критический урон!");
+                Console.WriteLine($"{Name} наносит критический урон!");
                 return (int) (CurrentDamage * Constants.CriticalDamageMultiplicator * damageMul);
             }
             return (int) (CurrentDamage * damageMul);

@@ -22,7 +22,7 @@ public static class FighterFactory
     }
 
 
-    private static string GetName()
+    public static string GetName()
     {
         while (true)
         {

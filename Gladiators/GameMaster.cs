@@ -1,4 +1,5 @@
 using Gladiators.Models.Fighters;
+using Gladiators.Service;
 
 namespace Gladiators;
 
@@ -11,17 +12,34 @@ internal static class GameMaster
         {
             Console.WriteLine( $"Раунд {++round}." );
 
-            // First fights second
-            if (FightAndCheckIfOpponentDead( firstFighter, secondFighter ) )
+            bool isFirstBetter = RandomService.CheckBestInitiative(firstFighter.Initiative, secondFighter.Initiative);
+            if (isFirstBetter)
             {
-                return firstFighter;
+                Console.WriteLine($"Инициатива за бойцом {firstFighter.Name}");
+                if (FightAndCheckIfOpponentDead( firstFighter, secondFighter ) )
+                {
+                    return firstFighter;
+                }
+                if (FightAndCheckIfOpponentDead( secondFighter, firstFighter ) )
+                {
+                    return secondFighter;
+                }
             }
+            else
+            {
+                Console.WriteLine($"Инициатива за бойцом {secondFighter.Name}");
+                if (FightAndCheckIfOpponentDead( secondFighter, firstFighter ) )
+                {
+                    return secondFighter;
+                }
+                if (FightAndCheckIfOpponentDead( firstFighter, secondFighter ) )
+                {
+                    return firstFighter;
+                }
+            }
+            
 
-            // Second fights first
-            if (FightAndCheckIfOpponentDead( secondFighter, firstFighter ) )
-            {
-                return secondFighter;
-            }
+            
 
             Console.WriteLine();
         }
@@ -33,10 +51,11 @@ internal static class GameMaster
         int damage = roundOwner.CalculateDamage();
         opponent.TakeDamage(damage);
 
-        Console.WriteLine(
-            $"Боец {opponent.Name} наносит {damage} урона. " +
-            $"Боец {roundOwner.Name} получает {damage - opponent.CurrentArmor} урона," +
-            $"количество жизней: {opponent.CurrentHealth}" );
+        Console.WriteLine($"""
+                           Боец {opponent.Name} наносит {damage} урона. 
+                           Боец {roundOwner.Name} получает {damage - opponent.CurrentArmor} урона,
+                           его количество жизней: {opponent.CurrentHealth}
+                           """);
 
         return opponent.CurrentHealth < 1;
     }
