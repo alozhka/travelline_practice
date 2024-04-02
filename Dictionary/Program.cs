@@ -1,25 +1,28 @@
-﻿using System.Text.Encodings.Web;
-using System.Text.Json;
-using System.Text.RegularExpressions;
-using System.Text.Unicode;
+﻿using System.Text.Json;
 
 namespace Dictionary;
 
 using MyDictionary = Dictionary<string, string>;
 
 
-internal class Program 
+internal static class Program
 {
-    private static readonly MyDictionary Translations;
-    static Program()
-    {
-        Translations = LoadData();
-    }
+    private static MyDictionary _translations;
+    private static string _filePath;
     
     public static void Main(string[] args)
     {
+        if (args.Length == 0)
+        {
+            Console.WriteLine("Отсутствует название файла");
+            return;
+        }
+
+        _filePath = args[0];
+        _translations = LoadData();
+
         ShowMenu();
-        var command = Console.ReadLine();
+        string? command = Console.ReadLine();
         while (command != "Exit")
         {
             switch (command)
@@ -48,16 +51,9 @@ internal class Program
 
     private static void Translate()
     {
-        Console.Write("Введите слово: ");
-        var word = Console.ReadLine();
-        if (word is null || !Regex.IsMatch(word, "^[а-яёА-Я]+$"))
-        {
-            Console.WriteLine("Неправильно введено слово!");
-            return;
-        }
+        string word = ParsingHelper.GetRussianWordFromConsole();
 
-        word = word.ToLower();
-        if (!Translations.TryGetValue(word, out var value))
+        if (!_translations.TryGetValue(word, out var value))
         {
             Console.WriteLine("Такого слова нет в словаре!");
         }
@@ -69,112 +65,74 @@ internal class Program
 
     private static void RemoveTranslation()
     {
-        Console.Write("Введите слово: ");
-        var word = Console.ReadLine();
-        if (word is null || !Regex.IsMatch(word, "^[а-яёА-Я]+$"))
-        {
-            Console.WriteLine("Неправильно введено слово!");
-            return;
-        }
+        string word = ParsingHelper.GetRussianWordFromConsole();
 
-        word = word.ToLower();
-        if (!Translations.ContainsKey(word))
+        if (!_translations.ContainsKey(word))
         {
             Console.WriteLine("Такого слова нет в словаре!");
         }
         else
         {
-            Translations.Remove(word);
+            _translations.Remove(word);
         }
 
-        Console.WriteLine("Успешно.\n");
+        ShowSuccessMessage();
     }
 
     private static void ChangeTranslation()
     {
-        Console.Write("Введите слово: ");
-        var word = Console.ReadLine();
-        if (word is null || !Regex.IsMatch(word, "^[а-яёА-Я]+$"))
-        {
-            Console.WriteLine("Неправильно введено слово!");
-            return;
-        }
-
-        word = word.ToLower();
-        if (Translations.ContainsKey(word))
+        string word = ParsingHelper.GetRussianWordFromConsole();
+        if (_translations.ContainsKey(word))
         {
             Console.WriteLine("Перевод для этого слова уже существует!");
             return;
         }
-        
-        Console.Write("Введите перевод: ");
-        var translation = Console.ReadLine();
-        if (translation is null || !Regex.IsMatch(translation, "^[a-zA-Z]+$"))
-        {
-            Console.WriteLine("Неправильно введен перевод!");
-            return;
-        }
 
-        Translations[word] = translation.ToLower();
-        Console.WriteLine("Успешно.\n");
+        string translation = ParsingHelper.GetEnglishWordFromConsole();
+
+        _translations[word] = translation;
+        ShowSuccessMessage();
     }
 
     private static void AddTranslation()
     {
-        Console.Write("Введите слово: ");
-        var word = Console.ReadLine();
-        if (word is null || !Regex.IsMatch(word, "^[а-яёА-Я]+$"))
-        {
-            Console.WriteLine("Неправильно введено слово!");
-            return;
-        }
+        string word = ParsingHelper.GetRussianWordFromConsole();
 
-        word = word.ToLower();
-        if (Translations.ContainsKey(word))
+        if (_translations.ContainsKey(word))
         {
             Console.WriteLine("Перевод для этого слова уже существует!");
             return;
         }
-        
-        Console.Write("Введите перевод: ");
-        var translation = Console.ReadLine();
-        if (translation is null || !Regex.IsMatch(translation, "^[a-zA-Z]+$"))
-        {
-            Console.WriteLine("Неправильно введен перевод!");
-            return;
-        }
 
-        Translations.Add(word, translation.ToLower());
-        Console.WriteLine("Успешно.\n");
+        string translation = ParsingHelper.GetEnglishWordFromConsole();
+
+        _translations.Add(word, translation);
+        ShowSuccessMessage();
     }
 
     private static MyDictionary LoadData()
     {
-        using var file = new FileStream("translations.json", FileMode.OpenOrCreate, FileAccess.Read);
+        using var file = new FileStream(_filePath, FileMode.OpenOrCreate, FileAccess.Read);
         try
         {
             var data = JsonSerializer.Deserialize<MyDictionary>(file);
             return data ?? [];
         }
-        catch (Exception)
+        catch (JsonException)
         {
             return [];
         }
     }
     private static void SaveData()
     {
-        using var file = new FileStream("translations.json", FileMode.Create, FileAccess.Write);
-        JsonSerializer.Serialize(file, Translations, Options);
+        using var file = new FileStream(_filePath, FileMode.Create, FileAccess.Write);
+        JsonSerializer.Serialize(file, _translations, ParsingHelper.Options);
     }
-    private static readonly JsonSerializerOptions Options = new()
-    {
-        Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Cyrillic),
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-    };
 
     private static void ShowMenu()
     {
         Console.WriteLine("""
+                          
                           **********************************************
                                               Меню:
                           AddTranslation - добавить перевод
@@ -183,6 +141,12 @@ internal class Program
                           Translate - перевести
                           Exit - выход из программы
                           **********************************************
+                          
                           """);
+    }
+
+    private static void ShowSuccessMessage()
+    {
+        Console.WriteLine("Успешно\n");
     }
 }
