@@ -5,40 +5,42 @@ namespace Gladiators;
 
 internal static class GameMaster
 {
-    public static IFighter PlayAndGetWinner(IReadOnlyList<IFighter> fighters)
+    public static IFighter PlayAndGetWinner(IList<IFighter> fighters)
     {
-        var firstFighter = fighters[0];
-        fighters[0].TakeDamage(10);
-        var secondFighter = fighters[1];
         int round = 0;
         while ( true )
         {
             Console.WriteLine( $"Раунд {++round}." );
 
-            bool isFirstBetter = RandomService.CheckBestInitiative(firstFighter.Initiative, secondFighter.Initiative);
-            if (isFirstBetter)
+            FighterService.SortByInitiative(fighters);
+            Console.WriteLine("Инициатива от большего к меньшему: " + 
+                              string.Join(", ", fighters.Select(f => f.Name)));
+            
+            // Самый боец выше инициативой наносит урон по инициативе ниже,
+            // поэтому по самому неинициативному всегда ударят
+            for (int i = 0; i < fighters.Count - 1; i++)
             {
-                Console.WriteLine($"Инициатива за бойцом {firstFighter.Name}");
-                if ( FightAndCheckIfOpponentDead( firstFighter, secondFighter ) )
+                if (FightAndCheckIfOpponentDead(
+                        fighters[i], 
+                        fighters[RandomService.AtRange(i + 1, fighters.Count - 1)]))
                 {
-                    return firstFighter;
-                }
-                if ( FightAndCheckIfOpponentDead( secondFighter, firstFighter ) )
-                {
-                    return secondFighter;
+                    // Убираем, если проиграл
+                    fighters.RemoveAt(i + 1);
                 }
             }
-            else
+            
+            // Последний наносит удар рандомному, тем самым у самого инициативного большое преимущество
+            if (FightAndCheckIfOpponentDead(
+                    fighters.Last(),
+                    fighters[RandomService.AtRange(0, fighters.Count - 2)]
+                    ))
             {
-                Console.WriteLine($"Инициатива за бойцом {secondFighter.Name}");
-                if ( FightAndCheckIfOpponentDead( secondFighter, firstFighter ) )
-                {
-                    return secondFighter;
-                }
-                if ( FightAndCheckIfOpponentDead( firstFighter, secondFighter ) )
-                {
-                    return firstFighter;
-                }
+                fighters.RemoveAt(-1);
+            }
+
+            if (fighters.Count == 1)
+            {
+                return fighters[0];
             }
             
             Console.WriteLine();

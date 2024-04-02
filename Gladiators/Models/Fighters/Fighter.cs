@@ -42,7 +42,7 @@ namespace Gladiators.Models.Fighters
             decimal damageMul = RandomService.ComputeDamageMul();
             if (RandomService.IsCriticalDamage())
             {
-                Console.WriteLine($"{Name} наносит критический урон!");
+                Console.WriteLine($"Боец {Name} наносит критический урон!");
                 return (int) (CurrentDamage * Constants.CriticalDamageMultiplicator * damageMul);
             }
             return (int) (CurrentDamage * damageMul);
@@ -55,6 +55,11 @@ namespace Gladiators.Models.Fighters
             {
                 CurrentHealth = 0;
             }
+        }
+
+        public void RestoreHealth()
+        {
+            CurrentHealth = MaxHealth;
         }
 
         public override string ToString()

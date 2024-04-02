@@ -22,5 +22,6 @@ namespace Gladiators.Models.Fighters
 
         public void TakeDamage(int damage);
         public int CalculateDamage();
+        public void RestoreHealth();
     }
 }

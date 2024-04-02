@@ -1,5 +1,6 @@
 ﻿using Gladiators.Factory;
 using Gladiators.Models.Fighters;
+using Gladiators.Service;
 
 namespace Gladiators;
 
@@ -12,9 +13,9 @@ public static class Program
         ShowMenu();
         string? command = Console.ReadLine();
 
-        while (command != "4")
+        while ( command != "4" )
         {
-            switch (command)
+            switch ( command )
             {
                 case "1":
                     AddFighter();
@@ -26,7 +27,7 @@ public static class Program
                     Fight();
                     break;
                 default:
-                    Console.WriteLine("Неправильно введена команда!");
+                    Console.WriteLine( "Неправильно введена команда!" );
                     break;
             }
             
@@ -48,11 +49,11 @@ public static class Program
 
         if (index == -1)
         {
-            Console.WriteLine("Такого бойца не существует!");
+            Console.WriteLine( "Такого бойца не существует!" );
         }
         else
         {
-            Fighters.RemoveAt(index);
+            Fighters.RemoveAt( index );
             ShowSuccessResult();
         }
     }
@@ -63,11 +64,12 @@ public static class Program
             Console.WriteLine("Вы ввели недостаточное количество бойцов!");
             return;
         }
-        Console.WriteLine("\n" + string.Join("\n\n", Fighters) + "\n");
+        Console.WriteLine( "\n" + string.Join( "\n\n", Fighters ) + "\n" );
         
         IFighter winner = GameMaster.PlayAndGetWinner( Fighters );
-
         Console.WriteLine( $"\nВыигрывает {winner.Name}" );
+        
+        FighterService.RestoreHealth(Fighters);
     }
 
     private static void ShowMenu()
@@ -85,6 +87,6 @@ public static class Program
 
     private static void ShowSuccessResult()
     {
-        Console.WriteLine("Успешно");
+        Console.WriteLine( "Успешно" );
     }
 }
