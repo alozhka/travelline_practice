@@ -1,4 +1,5 @@
 using Gladiators.Config;
+using Gladiators.Models.Fighters;
 
 namespace Gladiators.Service;
 
@@ -27,5 +28,12 @@ public static class RandomService
         int roll2 = RollD20();
 
         return (roll1 + initiative1) > (roll2 + initiative2);
+    }
+    public static IReadOnlyList<int> CheckBestInitiative(IReadOnlyList<int> initiatives)
+    {
+        int roll1 = RollD20();
+        int roll2 = RollD20();
+
+        return new List<int> {};
     }
 }

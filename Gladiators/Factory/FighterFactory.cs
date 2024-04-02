@@ -15,10 +15,10 @@ public static class FighterFactory
     {
         return new Fighter( 
             GetName(), 
-            SelectSingleFromModels<IRace>("раса", StaticModels.Races), 
-            SelectSingleFromModels<IClass>("класс", StaticModels.Classes),
-            SelectSingleFromModels<IArmor>("броня", StaticModels.Armors),
-            SelectSingleFromModels<IWeapon>("класс", StaticModels.Weapons));
+            SelectSingleFromList("раса", StaticModels.Races), 
+            SelectSingleFromList("класс", StaticModels.Classes),
+            SelectSingleFromList("броня", StaticModels.Armors),
+            SelectSingleFromList("класс", StaticModels.Weapons));
     }
 
 
@@ -39,7 +39,7 @@ public static class FighterFactory
         }
     }
     
-    private static T SelectSingleFromModels<T>(string modelsType, IReadOnlyList<IModel> models) where T : IModel
+    private static T SelectSingleFromList<T>(string modelsType, IReadOnlyList<T> models) where T : IModel
     {
         while (true)
         {
@@ -49,13 +49,13 @@ public static class FighterFactory
                                 """);
             
             string? modelStr = Console.ReadLine();
-            if (!int.TryParse( modelStr, out int modelInt) || modelInt < 0 || modelInt > models.Count )
+            if (!int.TryParse( modelStr, out int modelInt) || modelInt < 0 || modelInt > models.Count - 1 )
             {
                 Console.WriteLine($"Неправильно введен(о/а) {modelsType}!");
                 continue;
             }
 
-            return (T) models[modelInt];
+            return models[modelInt];
         }
     }
     

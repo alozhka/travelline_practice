@@ -5,14 +5,13 @@ using Gladiators.Models.Weapons;
 
 namespace Gladiators.Models.Fighters
 {
-    public interface IFighter
+    public interface IFighter : IModel
     {
         public int MaxHealth { get; }
         public int CurrentHealth { get; }
         public int CurrentArmor { get; }
         public int CurrentDamage { get; }
 
-        public string Name { get; }
         
         public int Initiative { get; }
 

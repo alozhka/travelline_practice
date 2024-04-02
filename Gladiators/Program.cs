@@ -1,7 +1,5 @@
-﻿using System.Text.RegularExpressions;
-using Gladiators.Factory;
+﻿using Gladiators.Factory;
 using Gladiators.Models.Fighters;
-using Gladiators.Service;
 
 namespace Gladiators;
 
@@ -14,7 +12,7 @@ public static class Program
         ShowMenu();
         string? command = Console.ReadLine();
 
-        while (command != "Exit")
+        while (command != "4")
         {
             switch (command)
             {
@@ -29,10 +27,10 @@ public static class Program
                     break;
                 default:
                     Console.WriteLine("Неправильно введена команда!");
-                    ShowMenu();
                     break;
             }
-
+            
+            ShowMenu();
             command = Console.ReadLine();
         }
     }
@@ -40,6 +38,7 @@ public static class Program
     private static void AddFighter()
     {
         Fighters.Add(FighterFactory.CreateByConsole());
+        ShowSuccessResult();
     }
     private static void RemoveFighter()
     {
@@ -54,25 +53,38 @@ public static class Program
         else
         {
             Fighters.RemoveAt(index);
-            Console.WriteLine("Успешно");
+            ShowSuccessResult();
         }
     }
     private static void Fight()
     {
-        Console.WriteLine(string.Join("\n", Fighters));
+        if (Fighters.Count < 2)
+        {
+            Console.WriteLine("Вы ввели недостаточное количество бойцов!");
+            return;
+        }
+        Console.WriteLine("\n" + string.Join("\n\n", Fighters) + "\n");
         
-        //IFighter winner = GameMaster.PlayAndGetWinner( firstFighter, secondFighter );
+        IFighter winner = GameMaster.PlayAndGetWinner( Fighters );
 
-        //Console.WriteLine( $"\nВыигрывает {winner.Name}" );
+        Console.WriteLine( $"\nВыигрывает {winner.Name}" );
     }
 
     private static void ShowMenu()
     {
         Console.WriteLine("""
+                          
                           Меню:
-                          1 -> Бобавить бойца
+                          1 -> Добавить бойца
                           2 -> Удалить бойца
                           3 -> Симулировать сражение
+                          4 -> Выход
+                          
                           """);
+    }
+
+    private static void ShowSuccessResult()
+    {
+        Console.WriteLine("Успешно");
     }
 }
