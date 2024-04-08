@@ -53,13 +53,13 @@ internal static class Program
     {
         string word = ParsingHelper.GetRussianWordFromConsole();
 
-        if (!_translations.TryGetValue(word, out var value))
+        if (!_translations.TryGetValue(word, out string? translation))
         {
             Console.WriteLine("Такого слова нет в словаре!");
         }
         else
         {
-            Console.WriteLine($"{word} - {value}");
+            Console.WriteLine($"{word} - {translation}");
         }
     }
 
@@ -112,10 +112,10 @@ internal static class Program
 
     private static MyDictionary LoadData()
     {
-        using var file = new FileStream(_filePath, FileMode.OpenOrCreate, FileAccess.Read);
+        using FileStream file = new(_filePath, FileMode.OpenOrCreate, FileAccess.Read);
         try
         {
-            var data = JsonSerializer.Deserialize<MyDictionary>(file);
+            MyDictionary? data = JsonSerializer.Deserialize<MyDictionary>(file);
             return data ?? [];
         }
         catch (JsonException)
@@ -125,7 +125,7 @@ internal static class Program
     }
     private static void SaveData()
     {
-        using var file = new FileStream(_filePath, FileMode.Create, FileAccess.Write);
+        using FileStream file = new(_filePath, FileMode.Create, FileAccess.Write);
         JsonSerializer.Serialize(file, _translations, ParsingHelper.Options);
     }
 

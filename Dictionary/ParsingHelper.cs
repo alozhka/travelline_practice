@@ -5,7 +5,7 @@ using System.Text.Unicode;
 
 namespace Dictionary;
 
-public class ParsingHelper
+public static class ParsingHelper
 {
     public static readonly JsonSerializerOptions Options = new()
     {
@@ -31,8 +31,16 @@ public class ParsingHelper
     {
         while (true)
         {
-            var word = Console.ReadLine();
-            if (word is null || !Regex.IsMatch(word, regex))
+            string? word  = Console.ReadLine();
+            if (word is null)
+            {
+                Console.WriteLine("Слово не было введено!");
+                continue;
+            }
+
+            word = word.ToLower();
+            
+            if (!Regex.IsMatch(word, regex))
             {
                 Console.WriteLine("Неправильно введено слово!");
                 continue;
