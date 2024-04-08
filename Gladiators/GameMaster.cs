@@ -8,32 +8,33 @@ internal static class GameMaster
     public static IFighter PlayAndGetWinner(IList<IFighter> fighters)
     {
         int round = 0;
-        while ( true )
+
+        while (true)
         {
-            Console.WriteLine( $"Раунд {++round}." );
+            Console.WriteLine($"Раунд {++round}.");
 
             FighterService.SortByInitiative(fighters);
-            Console.WriteLine("Инициатива от большего к меньшему: " + 
+            Console.WriteLine("Инициатива от большего к меньшему: " +
                               string.Join(", ", fighters.Select(f => f.Name)));
-            
+
             // Самый боец выше инициативой наносит урон по инициативе ниже,
             // поэтому по самому неинициативному всегда ударят
             for (int i = 0; i < fighters.Count - 1; i++)
             {
                 if (FightAndCheckIfOpponentDead(
-                        fighters[i], 
+                        fighters[i],
                         fighters[RandomService.AtRange(i + 1, fighters.Count - 1)]))
                 {
                     // Убираем, если проиграл
                     fighters.RemoveAt(i + 1);
                 }
             }
-            
+
             // Последний наносит удар рандомному, тем самым у самого инициативного большое преимущество
             if (FightAndCheckIfOpponentDead(
                     fighters.Last(),
                     fighters[RandomService.AtRange(0, fighters.Count - 2)]
-                    ))
+                ))
             {
                 fighters.RemoveAt(-1);
             }
@@ -42,13 +43,12 @@ internal static class GameMaster
             {
                 return fighters[0];
             }
-            
+
             Console.WriteLine();
         }
-
     }
 
-    private static bool FightAndCheckIfOpponentDead( IFighter roundOwner, IFighter opponent )
+    private static bool FightAndCheckIfOpponentDead(IFighter roundOwner, IFighter opponent)
     {
         int damage = roundOwner.CalculateDamage();
         opponent.TakeDamage(damage);

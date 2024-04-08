@@ -11,10 +11,9 @@ public static class FighterService
             fighter.RestoreHealth();
         }
     }
-    
+
     public static void SortByInitiative(IList<IFighter> fighters)
     {
         fighters = fighters.OrderBy(f => f.Initiative + RandomService.RollD20()).ToList();
     }
-    
 }

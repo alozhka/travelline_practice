@@ -11,8 +11,6 @@ namespace Gladiators.Models.Fighters
         public int CurrentHealth { get; }
         public int CurrentArmor { get; }
         public int CurrentDamage { get; }
-
-        
         public int Initiative { get; }
 
         public IWeapon Weapon { get; }

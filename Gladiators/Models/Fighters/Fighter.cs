@@ -22,14 +22,14 @@ namespace Gladiators.Models.Fighters
         public IArmor Armor { get; }
         public IClass Class { get; }
 
-        public Fighter( string name, IRace race, IClass @class, IArmor armor, IWeapon weapon )
+        public Fighter(string name, IRace race, IClass @class, IArmor armor, IWeapon weapon)
         {
             Name = name;
             Race = race;
             Armor = armor;
             Weapon = weapon;
             Class = @class;
-            
+
             MaxHealth = Race.Health + Class.Health;
             CurrentHealth = MaxHealth;
             CurrentDamage = Race.Damage + Class.Damage + Weapon.Damage;
@@ -43,9 +43,10 @@ namespace Gladiators.Models.Fighters
             if (RandomService.IsCriticalDamage())
             {
                 Console.WriteLine($"Боец {Name} наносит критический урон!");
-                return (int) (CurrentDamage * Constants.CriticalDamageMultiplicator * damageMul);
+                return (int)(CurrentDamage * Constants.CriticalDamageMultiplicator * damageMul);
             }
-            return (int) (CurrentDamage * damageMul);
+
+            return (int)(CurrentDamage * damageMul);
         }
 
         public void TakeDamage(int damage)
