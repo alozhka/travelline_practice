@@ -17,12 +17,13 @@ public class Car : ICar
         Engine = engine;
         Transmission = transmission;
         Color = color;
-        
+
         MaxSpeed = ComputeMaxSpeed();
     }
+
     public string Name { get; }
     public int MaxSpeed { get; }
-    
+
     public IBrand Brand { get; }
     public IBody Body { get; }
     public IEngine Engine { get; }
@@ -32,9 +33,9 @@ public class Car : ICar
     private int ComputeMaxSpeed()
     {
         decimal d = Transmission.GearsAmount
-                   * ((Engine.CylinderVolume / 1000m) * Engine.CylindersAmount * Constants.EnginePowerMultiplier)
-                   * Body.StreamliningRatio;
-        return (int) d;
+                    * ((Engine.CylinderVolume / 1000m) * Engine.CylindersAmount * Constants.EnginePowerMultiplier)
+                    * Body.StreamliningRatio;
+        return (int)d;
     }
 
     public override string ToString()

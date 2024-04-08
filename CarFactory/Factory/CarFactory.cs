@@ -9,22 +9,22 @@ using CarFactory.Service;
 
 namespace CarFactory.Factory;
 
-public class CarFactory
+public static class CarFactory
 {
     public static ICar CreateByConsole()
     {
         Console.Write("Выберите имя своей будущей машины: ");
         string name = ParsingService.GetName();
-        
+
         Console.WriteLine("Выберите бренд:");
         IBrand brand = ParsingService.SelectSingleFromList(StaticModels.Brands);
-        
+
         Console.WriteLine("Выберите кузов:");
         IBody body = ParsingService.SelectSingleFromList(StaticModels.Bodies);
-        
+
         Console.WriteLine("Выберите двигатель:");
         IEngine engine = ParsingService.SelectSingleFromList(StaticModels.Engines);
-        
+
         Console.WriteLine("Выберите коробку передач:");
         ITransmission transmission = ParsingService.SelectSingleFromList(StaticModels.Transmissions);
 
