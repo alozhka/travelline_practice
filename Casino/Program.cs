@@ -3,7 +3,9 @@
 internal static class Program
 {
     private const int Multiplicator = 10;
+    private const int MaxRangomNubmer = 20;
     private static readonly IEnumerable<int> WinningValues = new[] { 18, 19, 20 };
+    
     public static void Main()
     {
         Random rand = new Random();
@@ -11,7 +13,7 @@ internal static class Program
         
         while (balance > 0)
         {
-            Console.WriteLine("\nБаланс: " + balance);
+            Console.WriteLine($"\nБаланс: {balance}");
             Console.Write("Введите ставку: ");
             bool isValidBet = int.TryParse(Console.ReadLine(), out int bet);
             if (!isValidBet)
@@ -26,7 +28,7 @@ internal static class Program
             }
             else
             {
-                int randomNumber = rand.Next(20) + 1;
+                int randomNumber = rand.Next(MaxRangomNubmer) + 1;
                 if (WinningValues.Contains(randomNumber))
                 {
                     int profit = bet * (1 + Multiplicator * randomNumber % 17);
