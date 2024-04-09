@@ -8,7 +8,7 @@ public static class AccommodationsProcessor
 {
     private static BookingService _bookingService = new();
     private static Dictionary<int, ICommand> _executedCommands = new();
-    private static int s_commandIndex = 0;
+    private static int _commandIndex = 0;
 
     public static void Run()
     {
@@ -37,8 +37,8 @@ public static class AccommodationsProcessor
 
     private static void ProcessCommand(string input)
     {
-        string[] parts       = input.Split(' ');
-        string   commandName = parts[0];
+        string[] parts = input.Split(' ');
+        string commandName = parts[0];
 
         switch (commandName)
         {
@@ -72,13 +72,13 @@ public static class AccommodationsProcessor
                     UserId = int.Parse(parts[1]),
                     Category = parts[2],
                     StartDate = bookingStartDate,
-                    EndDate = bookingStartDate,
+                    EndDate = bookingEndDate,
                     Currency = currency,
                 };
 
                 BookCommand bookCommand = new(_bookingService, bookingDto);
                 bookCommand.Execute();
-                _executedCommands.Add(++s_commandIndex, bookCommand);
+                _executedCommands.Add(++_commandIndex, bookCommand);
                 Console.WriteLine("Booking command run is successful.");
                 break;
 
@@ -89,17 +89,22 @@ public static class AccommodationsProcessor
                     return;
                 }
 
-                Guid                 bookingId     = Guid.Parse(parts[1]);
+                Guid bookingId = Guid.Parse(parts[1]);
                 CancelBookingCommand cancelCommand = new(_bookingService, bookingId);
                 cancelCommand.Execute();
-                _executedCommands.Add(++s_commandIndex, cancelCommand);
+                _executedCommands.Add(++_commandIndex, cancelCommand);
                 Console.WriteLine("Cancellation command run is successful.");
                 break;
 
             case "undo":
-                _executedCommands[s_commandIndex].Undo();
-                _executedCommands.Remove(s_commandIndex);
-                s_commandIndex--;
+                if (_commandIndex < 1)
+                {
+                    Console.WriteLine("There are no commands left to undo");
+                }
+
+                _executedCommands[_commandIndex].Undo();
+                _executedCommands.Remove(_commandIndex);
+                _commandIndex--;
                 Console.WriteLine("Last command undone.");
 
                 break;
@@ -110,7 +115,7 @@ public static class AccommodationsProcessor
                     return;
                 }
 
-                Guid                   id          = Guid.Parse(parts[1]);
+                Guid id = Guid.Parse(parts[1]);
                 FindBookingByIdCommand findCommand = new(_bookingService, id);
                 findCommand.Execute();
                 break;
@@ -135,9 +140,8 @@ public static class AccommodationsProcessor
                     return;
                 }
 
-                string categoryName  = parts[3];
-                SearchBookingsCommand searchCommand =
-                    new(_bookingService, searchStartDate, searchEndDate, categoryName);
+                string categoryName = parts[3];
+                SearchBookingsCommand searchCommand = new(_bookingService, searchStartDate, searchEndDate, categoryName);
                 searchCommand.Execute();
                 break;
 

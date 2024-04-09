@@ -28,6 +28,11 @@ public class BookingService : IBookingService
             throw new ArgumentException("End date cannot be earlier than start date");
         }
 
+        if (DateTime.Now <= startDate)
+        {
+            throw new ArgumentException("Start date cannot be earlier than now date");
+        }
+
         RoomCategory? selectedCategory = _categories.FirstOrDefault(c => c.Name == categoryName);
         if (selectedCategory == null)
         {
@@ -113,12 +118,7 @@ public class BookingService : IBookingService
 
     public decimal CalculateCancellationPenaltyAmount(Booking booking)
     {
-        if (booking.StartDate <= DateTime.Now)
-        {
-            throw new ArgumentException("Start date cannot be earlier than now date");
-        }
-
-        int daysBeforeArrival = (DateTime.Now - booking.StartDate).Days;
+        int daysBeforeArrival = (booking.StartDate - DateTime.Now).Days;
 
         return 5000.0m / daysBeforeArrival;
     }
