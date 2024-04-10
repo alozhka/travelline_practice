@@ -28,7 +28,7 @@ public class BookingService : IBookingService
             throw new ArgumentException("End date cannot be earlier than start date");
         }
 
-        if (DateTime.Now <= startDate)
+        if (startDate <= DateTime.Now)
         {
             throw new ArgumentException("Start date cannot be earlier than now date");
         }
@@ -140,7 +140,7 @@ public class BookingService : IBookingService
     private static decimal CalculateBookingCost(decimal baseRate, int days, int userId, decimal currencyRate)
     {
         decimal cost = baseRate * days;
-        decimal totalCost = cost - cost * CalculateDiscount(userId) * currencyRate;
+        decimal totalCost = cost * (1 - CalculateDiscount(userId)) * currencyRate;
         return totalCost;
     }
 }

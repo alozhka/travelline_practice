@@ -40,7 +40,7 @@
    будут ещё и дни из прошлого. Добавим проверку:
 
     ```csharp 
-    if (DateTime.Now <= startDate)
+    if (startDate <= DateTime.Now)
     {
         throw new ArgumentException("Can`t book earlier than the current time");
     }
@@ -75,6 +75,16 @@
            return Name;
        }
    }
+   ```
+   
+4. Фикс с конвертацией валют
+
+   BookingService: 143
+   Поправил вычисление скидки, ошибка была в вычислении процентов
+   для скидки
+
+   ```csharp
+   decimal totalCost = cost * (1 - CalculateDiscount(userId)) * currencyRate
    ```
 
 ********************
@@ -116,4 +126,3 @@
         throw new ArgumentException("Can`t book earlier than the current time");
     }
     ```
-
