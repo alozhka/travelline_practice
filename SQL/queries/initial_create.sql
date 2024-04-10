@@ -50,3 +50,16 @@ IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='facility')
 
         CONSTRAINT PK_facility_id PRIMARY KEY (facility_id)
     )
+
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='rooms_to_facilities')
+    CREATE TABLE 'rooms_to_facilities' (
+        room_id INT NOT NULL,
+        facility_id INT NOT NULL,
+
+        CONSTRAINT PK_facility_id PRIMARY KEY (room_id, facility_id),
+
+        CONSTRAINT FK_rooms_to_facilities_room
+            FOREIGN KEY (room_id) REFERENCES HotelManagement.dbo.room (room_id),
+        CONSTRAINT FK_rooms_to_facilities_facility
+            FOREIGN KEY (facility_id) REFERENCES HotelManagement.dbo.facility (facility_id)
+    )
