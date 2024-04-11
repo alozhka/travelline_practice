@@ -17,7 +17,7 @@ IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='customer')
         email NVARCHAR(50) NOT NULL,
         phone_number NVARCHAR(11) NOT NULL,
 
-        CONSTRAINT PK_customer_id PRIMARY KEY (room_id)
+        CONSTRAINT PK_customer_id PRIMARY KEY (customer_id)
     )
 
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='booking')
@@ -56,7 +56,7 @@ IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='rooms_to_facilities')
         room_id INT NOT NULL,
         facility_id INT NOT NULL,
 
-        CONSTRAINT PK_facility_id PRIMARY KEY (room_id, facility_id),
+        CONSTRAINT PK_room_to_facility PRIMARY KEY (room_id, facility_id),
 
         CONSTRAINT FK_rooms_to_facilities_room
             FOREIGN KEY (room_id) REFERENCES HotelManagement.dbo.room (room_id),
