@@ -203,3 +203,25 @@ book 5 Standard 04/15/2024 04/27/2024 rub
 ```
 search 5/22/2024 10/08/2024 Standard
 ```
+
+Значения в начале:
+
+![Все значения](../assets/initial.png)
+
+Поиск по дате въезда:
+
+![Поиск по дате въезда](../assets/first_query.png)
+
+Поиск по дате выезда:
+
+![Поиск по дате выезда](../assets/second_query.png)
+
+Поиск по категории:
+
+![Поиск по категории](../assets/third_query.png)
+
+Результат
+```
+Found 1 bookings for category 'Standard' between 5/22/2024 12:00:00 AM and 10/8/2024 12:00:00 AM:
+- Booking ID: 4b8f444b-97bb-4e66-94d8-09b4a2bf21c1, User ID: 1
+```
