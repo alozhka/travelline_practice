@@ -8,17 +8,17 @@ public class BookingService : IBookingService
 
     private readonly IReadOnlyList<RoomCategory> _categories =
     [
-        new RoomCategory { Name = "Standard", BaseRate = 100, AvailableRooms = 10 },
-        new RoomCategory { Name = "Deluxe", BaseRate = 200, AvailableRooms = 5 }
+        new("Standard", 100, 10),
+        new("Deluxe", 200, 5)
     ];
 
     private readonly IReadOnlyList<User> _users =
     [
-        new User { Id = 1, Name = "Alice Johnson" },
-        new User { Id = 2, Name = "Bob Smith" },
-        new User { Id = 3, Name = "Charlie Brown" },
-        new User { Id = 4, Name = "Diana Prince" },
-        new User { Id = 5, Name = "Evan Wright" }
+        new(1, "Alice Johnson"),
+        new(2, "Bob Smith"),
+        new(3, "Charlie Brown"),
+        new(4, "Diana Prince"),
+        new(5, "Evan Wright")
     ];
 
     public Booking Book(int userId, string categoryName, DateTime startDate, DateTime endDate, Currency currency)
@@ -54,16 +54,7 @@ public class BookingService : IBookingService
         decimal currencyRate = GetCurrencyRate(currency);
         decimal totalCost = CalculateBookingCost(selectedCategory.BaseRate, days, userId, currencyRate);
 
-        Booking? booking = new()
-        {
-            Id = Guid.NewGuid(),
-            UserId = userId,
-            StartDate = startDate,
-            EndDate = endDate,
-            RoomCategory = selectedCategory,
-            Cost = totalCost,
-            Currency = currency
-        };
+        Booking? booking = new(Guid.NewGuid(), userId, startDate, endDate, selectedCategory, currency, totalCost);
 
         _bookings.Add(booking);
         selectedCategory.AvailableRooms--;
@@ -106,7 +97,7 @@ public class BookingService : IBookingService
 
         query = query.Where(b => b.StartDate >= startDate);
 
-        query = query.Where(b => b.EndDate < endDate);
+        query = query.Where(b => b.EndDate <= endDate);
 
         if (!string.IsNullOrEmpty(categoryName))
         {

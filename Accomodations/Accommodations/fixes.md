@@ -34,7 +34,7 @@
 
 1. Ошибка с отменой команды бронирования
 
-   BookingService: метод Book
+   BookingService: метод Book : 31
 
    У нас нет проверки, если пользователь создаст бронь, в диапазоне которой
    будут ещё и дни из прошлого. Добавим проверку:
@@ -48,40 +48,33 @@
 
 2. Фикс с подсчётом штрафа
 
+   BookingService: 112
+
    Вычиталась текущая (ранняя) дата из поздней (начальной забронированной) датой.
    Теперь вычитание будет > 0.
 
    ```csharp
-    public decimal CalculateCancellationPenaltyAmount(Booking booking)
-    {
-        int daysBeforeArrival = (booking.StartDate - DateTime.Now).Days;
-
-        return 5000.0m / daysBeforeArrival;
-    }
+    int daysBeforeArrival = (booking.StartDate - DateTime.Now).Days;
    ```
 
-3. Фикс с отбражением категории комнаты
+3. Фикс с отображением категории комнаты
 
-   Переопределил ToString для коректного отображения в консоли
+   RoomCategory: 16
+
+   Переопределил ToString для корректного отображения в консоли
    ```csharp
-   public class RoomCategory
-   {
-       public string Name { get; init; }
-       public decimal BaseRate { get; init; }
-       public int AvailableRooms { get; set; }
-   
-       public override string ToString()
-       {
-           return Name;
-       }
-   }
+   public override string ToString()
+    {
+        return Name;
+    }
    ```
    
 4. Фикс с конвертацией валют
 
    BookingService: 143
+
    Поправил вычисление скидки, ошибка была в вычислении процентов
-   для скидки
+   для скидки. CurrencyRate умножался не на всё значение, а только на скидку
 
    ```csharp
    decimal totalCost = cost * (1 - CalculateDiscount(userId)) * currencyRate
@@ -89,22 +82,10 @@
 
 ********************
 
-# Дополнительные фиксы в кодой базе:
+# Дополнительные фиксы в кодовой базе:
 
-1. BookingDto: 8
-
-   Добавил required к полю категории, так как можно забыть установить значение
-   при инициализации
-   ```csharp
-    public class BookingDto
-    {
-        public int UserId { get; init; }
-        public DateTime StartDate { get; init; }
-        public DateTime EndDate { get; init; }
-        public required string Category { get; init; }
-        public CurrencyDto Currency { get; init; }
-    }
-   ```
+1. Добавил по конструктору классу Booking, BookingDto, RoomCategory, 
+   так как можно забыть указать какое-либо из полей при инициализации не через конструктор
 
 2. Поменял `s_commandIndex` на `_commandIndex` в соответствии с
    соглашениями о кодировании
@@ -114,15 +95,35 @@
 
 # Дополнительные фиксы в бизнес логике:
 
-1. BookingService: метод CalculateCancellationPenaltyAmount
+1. BookingService: метод CalculateCancellationPenaltyAmount : 110
 
-   Убрал проверку, при которой нельзя отменить бронь уже во время заезда,
-   так как мы её уже проверяем в методе отмены бронирования, после которого 
-   уже вызываем подсчёт штрафа. Речь идёт об этом условии:
-
+   Убрал проверку, при которой нельзя отменить бронь во время заезда и позже.
+   Так как мы вызываем подсчёт штрафа в тандеме с методами,
+   которые делают валидацию, то по сути будет выполняться двойная проверка.
+   Я убрал из метода это условие:
     ```csharp 
     if (DateTime.Now <= startDate)
     {
         throw new ArgumentException("Can`t book earlier than the current time");
     }
     ```
+
+2. BookingService: 107
+   Сделал нестрогое сравнение, так как иначе мы бы теряли последний день во время запроса
+   ```csharp
+    public IEnumerable<Booking> SearchBookings(DateTime startDate, DateTime endDate, string categoryName)
+    {
+        IQueryable<Booking> query = _bookings.AsQueryable()
+            .Where(b => b.StartDate >= startDate)
+            .Where(b => b.EndDate <= endDate);
+
+        if (!string.IsNullOrEmpty(categoryName))
+        {
+            query = query.Where(b => b.RoomCategory.Name == categoryName);
+        }
+
+        return query.ToList();
+    }
+   ```
+
+   Ещё я сразу же применил сортировку,

@@ -67,14 +67,7 @@ public static class AccommodationsProcessor
                     return;
                 }
 
-                BookingDto bookingDto = new()
-                {
-                    UserId = int.Parse(parts[1]),
-                    Category = parts[2],
-                    StartDate = bookingStartDate,
-                    EndDate = bookingEndDate,
-                    Currency = currency,
-                };
+                BookingDto bookingDto = new(int.Parse(parts[1]), parts[2], bookingStartDate, bookingEndDate, currency);
 
                 BookCommand bookCommand = new(_bookingService, bookingDto);
                 bookCommand.Execute();
@@ -141,7 +134,8 @@ public static class AccommodationsProcessor
                 }
 
                 string categoryName = parts[3];
-                SearchBookingsCommand searchCommand = new(_bookingService, searchStartDate, searchEndDate, categoryName);
+                SearchBookingsCommand searchCommand =
+                    new(_bookingService, searchStartDate, searchEndDate, categoryName);
                 searchCommand.Execute();
                 break;
 
