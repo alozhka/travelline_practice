@@ -54,7 +54,7 @@ public class BookingService : IBookingService
         decimal currencyRate = GetCurrencyRate(currency);
         decimal totalCost = CalculateBookingCost(selectedCategory.BaseRate, days, userId, currencyRate);
 
-        Booking? booking = new(Guid.NewGuid(), userId, startDate, endDate, selectedCategory, currency, totalCost);
+        Booking booking = new(Guid.NewGuid(), userId, startDate, endDate, selectedCategory, currency, totalCost);
 
         _bookings.Add(booking);
         selectedCategory.AvailableRooms--;
@@ -116,11 +116,12 @@ public class BookingService : IBookingService
 
     private static decimal GetCurrencyRate(Currency currency)
     {
+        Random rand = new();
         decimal currencyRate = 1m;
         currencyRate *= currency switch
         {
-            Currency.Usd => (decimal)(new Random().NextDouble() * 100) + 1,
-            Currency.Cny => (decimal)(new Random().NextDouble() * 12) + 1,
+            Currency.Usd => (decimal) (1 / (92 + rand.NextDouble() * 5)), // 92 +- 5
+            Currency.Cny => (decimal) (1 / (12 + rand.NextDouble() * 2)), // 12 +- 2
             Currency.Rub => 1m,
             _ => throw new ArgumentOutOfRangeException(nameof(currency), currency, null)
         };

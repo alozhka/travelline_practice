@@ -82,7 +82,11 @@ public static class AccommodationsProcessor
                     return;
                 }
 
-                Guid bookingId = Guid.Parse(parts[1]);
+                if (!Guid.TryParse(parts[1], out Guid bookingId))
+                {
+                    Console.WriteLine("Invalid identifier.");
+                    return;
+                }
                 CancelBookingCommand cancelCommand = new(_bookingService, bookingId);
                 cancelCommand.Execute();
                 _executedCommands.Add(++_commandIndex, cancelCommand);
