@@ -68,7 +68,7 @@
         return Name;
     }
    ```
-   
+
 4. Фикс с конвертацией валют
 
    BookingService: 143
@@ -95,7 +95,7 @@
        }
    ```
 
-2. Добавил по конструктору классу Booking, BookingDto, RoomCategory, 
+2. Добавил по конструктору классу Booking, BookingDto, RoomCategory,
    так как можно забыть указать какое-либо из полей при инициализации не через конструктор
 
 3. Поменял `s_commandIndex` на `_commandIndex` в соответствии с
@@ -132,6 +132,13 @@
    IEnumerable<Booking> SearchBookings(DateTime startDate, DateTime endDate, string categoryName);
    ```
 
+7. IBookingService : 7
+
+   Аналогично убрал nullable, так как метод всегда возвращает не null
+
+   ```csharp
+   Booking Book(int userId, string categoryName, DateTime startDate, DateTime endDate, Currency currency);
+   ```
 
 ********************
 
@@ -139,7 +146,7 @@
 
 1. BookingService : 119
 
-   Мы принимали usd/rub и cny/rub как rub/usd и rub/cny с теми же значениями. 
+   Мы принимали usd/rub и cny/rub как rub/usd и rub/cny с теми же значениями.
    Получалось, что рубль мог стоить от 1 доллара до 101. Делю на 1, чтобы подвести к курсу rub/usd(cny)
    ```csharp
    Random rand = new();
@@ -152,8 +159,34 @@
       _ => throw new ArgumentOutOfRangeException(nameof(currency), currency, null)
    };
    ```
+2. BookingService : 27
 
-2. BookingService: метод CalculateCancellationPenaltyAmount : 110
+   Неправильно считался штраф, так как 5000руб не были привязаны к валюте.
+   Я вызываю метод для подсчёта стоимости для конкретной валюты, которая уже прокидывается
+   через класс Booking.
+
+   ```csharp
+   public decimal CalculateCancellationPenaltyAmount(Booking booking)
+       {
+           int daysBeforeArrival = (booking.StartDate - DateTime.Now).Days;
+   
+           return 5000.0m * GetCurrencyRate(booking.Currency) / daysBeforeArrival;
+       }
+   ```
+
+3. BookingService : 107
+
+   Сделал нестрогое сравнение для EndDate,
+   иначе мы бы теряли последний день во время запроса
+   ```csharp
+    IQueryable<Booking> query = _bookings
+            .AsQueryable()
+            .Where(b => b.StartDate >= startDate && b.EndDate <= endDate);
+   ```
+
+4. BookingService: метод CalculateCancellationPenaltyAmount : 110
+
+   Это не проблема бизнес логики, но, честно говоря, не знаю, куда её отнести.
 
    Убрал проверку, при которой нельзя отменить бронь во время заезда и позже.
    Так как мы вызываем подсчёт штрафа в тандеме с методами,
@@ -165,17 +198,6 @@
         throw new ArgumentException("Can`t book earlier than the current time");
     }
     ```
-
-3. BookingService: 107
-
-   Сделал нестрогое сравнение для EndDate, 
-   иначе мы бы теряли последний день во время запроса
-   ```csharp
-    IQueryable<Booking> query = _bookings
-            .AsQueryable()
-            .Where(b => b.StartDate >= startDate && b.EndDate <= endDate);
-   ```
-
 
 # Работа с поиском
 
@@ -190,6 +212,7 @@ query = query.Where(b => b.EndDate <= endDate);
 ```
 
 Начальные данные:
+
 ```
 book 1 Standard 09/01/2024 09/08/2024 rub
 book 2 Deluxe 5/30/2024 6/4/2024 cny
@@ -221,6 +244,7 @@ search 5/22/2024 10/08/2024 Standard
 ![Поиск по категории](../assets/third_query.png)
 
 Результат
+
 ```
 Found 1 bookings for category 'Standard' between 5/22/2024 12:00:00 AM and 10/8/2024 12:00:00 AM:
 - Booking ID: 4b8f444b-97bb-4e66-94d8-09b4a2bf21c1, User ID: 1

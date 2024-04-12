@@ -93,11 +93,9 @@ public class BookingService : IBookingService
 
     public IEnumerable<Booking> SearchBookings(DateTime startDate, DateTime endDate, string categoryName)
     {
-        IQueryable<Booking> query = _bookings.AsQueryable();
-
-        query = query.Where(b => b.StartDate >= startDate);
-
-        query = query.Where(b => b.EndDate <= endDate);
+        IQueryable<Booking> query = _bookings
+            .AsQueryable()
+            .Where(b => b.StartDate >= startDate && b.EndDate <= endDate);
 
         if (!string.IsNullOrEmpty(categoryName))
         {
@@ -111,7 +109,7 @@ public class BookingService : IBookingService
     {
         int daysBeforeArrival = (booking.StartDate - DateTime.Now).Days;
 
-        return 5000.0m / daysBeforeArrival;
+        return 5000.0m * GetCurrencyRate(booking.Currency) / daysBeforeArrival;
     }
 
     private static decimal GetCurrencyRate(Currency currency)
@@ -120,8 +118,8 @@ public class BookingService : IBookingService
         decimal currencyRate = 1m;
         currencyRate *= currency switch
         {
-            Currency.Usd => (decimal) (1 / (92 + rand.NextDouble() * 5)), // 92 +- 5
-            Currency.Cny => (decimal) (1 / (12 + rand.NextDouble() * 2)), // 12 +- 2
+            Currency.Usd => (decimal)(1 / (92 + rand.NextDouble() * 5)), // 92 +- 5
+            Currency.Cny => (decimal)(1 / (12 + rand.NextDouble() * 2)), // 12 +- 2
             Currency.Rub => 1m,
             _ => throw new ArgumentOutOfRangeException(nameof(currency), currency, null)
         };
