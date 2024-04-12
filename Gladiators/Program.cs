@@ -45,7 +45,6 @@ public static class Program
     private static void RemoveFighter()
     {
         string name = FighterFactory.GetName();
-
         int index = Fighters.FindIndex(f => f.Name == name);
 
         if (index == -1)

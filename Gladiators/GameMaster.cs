@@ -54,9 +54,9 @@ internal static class GameMaster
         opponent.TakeDamage(damage);
 
         Console.WriteLine($"Боец {opponent.Name} наносит {damage} урона. " +
-                          $"Боец {roundOwner.Name} получает {damage - opponent.CurrentArmor} урона, " +
-                          $"его количество жизней: {opponent.CurrentHealth}");
+                          $"Боец {roundOwner.Name} получает {damage - opponent.State.CombinedArmor} урона, " +
+                          $"его количество жизней: {opponent.State.CurrentHealth}");
 
-        return opponent.CurrentHealth < 1;
+        return opponent.State.CurrentHealth < 1;
     }
 }

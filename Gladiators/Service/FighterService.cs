@@ -14,6 +14,6 @@ public static class FighterService
 
     public static void SortByInitiative(IList<IFighter> fighters)
     {
-        fighters = fighters.OrderBy(f => f.Initiative + RandomService.RollD20()).ToList();
+        fighters = fighters.OrderBy(f => f.State.Initiative + RandomService.RollD20()).ToList();
     }
 }

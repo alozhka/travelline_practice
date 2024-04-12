@@ -5,72 +5,60 @@ using Gladiators.Models.Races;
 using Gladiators.Models.Weapons;
 using Gladiators.Service;
 
-namespace Gladiators.Models.Fighters
+namespace Gladiators.Models.Fighters;
+
+public class Fighter : IFighter
 {
-    public class Fighter : IFighter
+    public string Name { get; }
+    public FighterState State { get; }
+    public FighterProperties Properties { get; }
+
+    public Fighter(string name, IRace race, IClass @class, IArmor armor, IWeapon weapon)
     {
-        public int MaxHealth { get; }
-        public int CurrentHealth { get; private set; }
-        public int CurrentArmor { get; }
-        public int CurrentDamage { get; }
+        Name = name;
+        Properties = new FighterProperties(weapon, race, armor, @class);
+        
+        State = new FighterState(
+            maxHealth: Properties.Race.Health + Properties.Class.Health,
+            combinedArmor: Properties.Armor.Armor + Properties.Race.Armor,
+            combinedDamage: Properties.Race.Damage + Properties.Class.Damage + Properties.Weapon.Damage,
+            initiative: Properties.Race.Initiative + Properties.Class.Initiative
+            );
+    }
 
-        public string Name { get; }
-        public int Initiative { get; }
-
-        public IRace Race { get; }
-        public IWeapon Weapon { get; }
-        public IArmor Armor { get; }
-        public IClass Class { get; }
-
-        public Fighter(string name, IRace race, IClass @class, IArmor armor, IWeapon weapon)
+    public int CalculateDamage()
+    {
+        decimal damageMul = RandomService.ComputeDamageMul();
+        if (RandomService.IsCriticalDamage())
         {
-            Name = name;
-            Race = race;
-            Armor = armor;
-            Weapon = weapon;
-            Class = @class;
-
-            MaxHealth = Race.Health + Class.Health;
-            CurrentHealth = MaxHealth;
-            CurrentDamage = Race.Damage + Class.Damage + Weapon.Damage;
-            CurrentArmor = Armor.Armor + Race.Armor;
-            Initiative = Race.Initiative + Class.Initiative;
+            Console.WriteLine($"Боец {Name} наносит критический урон!");
+            return (int)(State.CombinedDamage * Constants.CriticalDamageMultiplicator * damageMul);
         }
 
-        public int CalculateDamage()
-        {
-            decimal damageMul = RandomService.ComputeDamageMul();
-            if (RandomService.IsCriticalDamage())
-            {
-                Console.WriteLine($"Боец {Name} наносит критический урон!");
-                return (int)(CurrentDamage * Constants.CriticalDamageMultiplicator * damageMul);
-            }
+        return (int)(State.CombinedDamage * damageMul);
+    }
 
-            return (int)(CurrentDamage * damageMul);
-        }
-
-        public void TakeDamage(int damage)
+    public void TakeDamage(int damage)
+    {
+        State.CurrentHealth -= Math.Max(damage - State.CombinedArmor, 0);
+        if (State.CurrentHealth < 0)
         {
-            CurrentHealth -= Math.Max(damage - CurrentArmor, 0);
-            if (CurrentHealth < 0)
-            {
-                CurrentHealth = 0;
-            }
+            State.CurrentHealth = 0;
         }
+    }
 
-        public void RestoreHealth()
-        {
-            CurrentHealth = MaxHealth;
-        }
+    public void RestoreHealth()
+    {
+        State.CurrentHealth = State.MaxHealth;
+    }
 
-        public override string ToString()
-        {
-            return $"""
-                    Боец {Name}:
-                    Максимальное количество жизней: {MaxHealth}
-                    Текущий урон: {CurrentDamage}
-                    Текущая броня: {CurrentArmor}
-                    """;
-        }
+    public override string ToString()
+    {
+        return $"""
+                Боец {Name}:
+                Максимальное количество жизней: {State.MaxHealth}
+                Текущий урон: {State.CombinedDamage}
+                Текущая броня: {State.CombinedArmor}
+                """;
     }
 }

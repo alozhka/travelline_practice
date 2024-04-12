@@ -7,16 +7,9 @@ namespace Gladiators.Models.Fighters
 {
     public interface IFighter : IModel
     {
-        public int MaxHealth { get; }
-        public int CurrentHealth { get; }
-        public int CurrentArmor { get; }
-        public int CurrentDamage { get; }
-        public int Initiative { get; }
+        public FighterState State { get; }
 
-        public IWeapon Weapon { get; }
-        public IRace Race { get; }
-        public IArmor Armor { get; }
-        public IClass Class { get; }
+        public FighterProperties Properties { get; }
 
         public void TakeDamage(int damage);
         public int CalculateDamage();
