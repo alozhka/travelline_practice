@@ -40,11 +40,7 @@ public class Fighter : IFighter
 
     public void TakeDamage(int damage)
     {
-        State.CurrentHealth -= Math.Max(damage - State.CombinedArmor, 0);
-        if (State.CurrentHealth < 0)
-        {
-            State.CurrentHealth = 0;
-        }
+        State.TakeDamage(damage);
     }
 
     public void RestoreHealth()

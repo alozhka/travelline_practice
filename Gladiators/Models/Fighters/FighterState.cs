@@ -12,8 +12,17 @@ public record FighterState
     }
 
     public int MaxHealth { get; }
-    public int CurrentHealth { get;  set; } //TODO: фигня, надо поправить
+    public int CurrentHealth { get; set; } //TODO: фигня, надо поправить
     public int CombinedArmor { get; }
     public int CombinedDamage { get; }
     public int Initiative { get; }
+
+    public void TakeDamage(int damage)
+    {
+        CurrentHealth -= Math.Max(damage - CombinedArmor, 0);
+        if (CurrentHealth < 0)
+        {
+            CurrentHealth = 0;
+        }
+    }
 }

@@ -1,6 +1,5 @@
 ﻿using Gladiators.Factory;
 using Gladiators.Models.Fighters;
-using Gladiators.Service;
 
 namespace Gladiators;
 
@@ -70,8 +69,6 @@ public static class Program
 
         IFighter winner = GameMaster.PlayAndGetWinner(Fighters);
         Console.WriteLine($"\nВыигрывает {winner.Name}");
-
-        FighterService.RestoreHealth(Fighters);
     }
 
     private static void ShowMenu()

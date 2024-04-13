@@ -21,20 +21,20 @@ internal static class GameMaster
             // поэтому по самому неинициативному всегда ударят
             for (int i = 0; i < fighters.Count - 1; i++)
             {
+                int opponentIndex = RandomService.AtRange(i + 1, fighters.Count - 1);
                 if (FightAndCheckIfOpponentDead(
                         fighters[i],
-                        fighters[RandomService.AtRange(i + 1, fighters.Count - 1)]))
+                        fighters[opponentIndex]))
                 {
                     // Убираем, если проиграл
-                    fighters.RemoveAt(i + 1);
+                    fighters.RemoveAt(opponentIndex);
                 }
             }
 
             // Последний наносит удар рандомному, тем самым у самого инициативного большое преимущество
             if (FightAndCheckIfOpponentDead(
                     fighters.Last(),
-                    fighters[RandomService.AtRange(0, fighters.Count - 2)]
-                ))
+                    fighters[RandomService.AtRange(0, fighters.Count - 2)]))
             {
                 fighters.RemoveAt(-1);
             }
@@ -44,6 +44,7 @@ internal static class GameMaster
                 return fighters[0];
             }
 
+            FighterService.RestoreHealth(fighters);
             Console.WriteLine();
         }
     }

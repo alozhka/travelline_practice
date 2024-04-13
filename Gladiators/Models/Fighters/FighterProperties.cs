@@ -5,7 +5,9 @@ using Gladiators.Models.Weapons;
 
 namespace Gladiators.Models.Fighters;
 
-public struct FighterProperties
+// пока оставил readonly, т.к. на текущий момент после инциализации 
+// ничего из списка ниже не меняется
+public readonly struct FighterProperties
 {
     public FighterProperties(IWeapon weapon, IRace race, IArmor armor, IClass @class)
     {
