@@ -6,7 +6,8 @@ IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='room')
         price_per_night MONEY NOT NULL,
         availability BIT NOT NULL,
 
-        CONSTRAINT PK_room_id PRIMARY KEY (room_id)
+        CONSTRAINT PK_room_id PRIMARY KEY (room_id),
+        CONSTRAINT AK_room_number UNIQUE (room_number)
     )
 
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='customer')
