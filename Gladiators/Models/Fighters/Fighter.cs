@@ -19,10 +19,10 @@ public class Fighter : IFighter
         Properties = new FighterProperties(weapon, race, armor, @class);
         
         State = new FighterState(
-            maxHealth: Properties.Race.Health + Properties.Class.Health,
-            combinedArmor: Properties.Armor.Armor + Properties.Race.Armor,
-            combinedDamage: Properties.Race.Damage + Properties.Class.Damage + Properties.Weapon.Damage,
-            initiative: Properties.Race.Initiative + Properties.Class.Initiative
+            maxHealth: race.Health + @class.Health,
+            combinedArmor: armor.Armor + race.Armor,
+            combinedDamage: race.Damage + @class.Damage + weapon.Damage,
+            initiative: race.Initiative + @class.Initiative
             );
     }
 
@@ -45,7 +45,7 @@ public class Fighter : IFighter
 
     public void RestoreHealth()
     {
-        State.CurrentHealth = State.MaxHealth;
+        State.RestoreHealth();
     }
 
     public override string ToString()

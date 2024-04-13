@@ -12,7 +12,7 @@ public record FighterState
     }
 
     public int MaxHealth { get; }
-    public int CurrentHealth { get; set; } //TODO: фигня, надо поправить
+    public int CurrentHealth { get; private set; }
     public int CombinedArmor { get; }
     public int CombinedDamage { get; }
     public int Initiative { get; }
@@ -24,5 +24,10 @@ public record FighterState
         {
             CurrentHealth = 0;
         }
+    }
+
+    public void RestoreHealth()
+    {
+        CurrentHealth = MaxHealth;
     }
 }
