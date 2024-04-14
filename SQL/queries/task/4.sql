@@ -21,7 +21,7 @@ JOIN
 JOIN 
     facility f ON rf.facility_id = f.facility_id
 WHERE 
-    c.first_name = 'Aalexandra' OR c.email = 'garik@yahoo.com'
+    c.phone_number = '79377777777'
 GROUP BY 
     b.booking_id,
     b.check_in_date,
