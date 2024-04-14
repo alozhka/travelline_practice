@@ -5,14 +5,14 @@ VALUES
     (110, N'одноместный c балконом', $3.6, 1),
     (200, N'трёхместный без балнона', $8.1, 1),
     (140, N'двухместный', $9.6, 1),
-    (140, N'одноместный c телевизором', $2.7, 1)
+    (142, N'одноместный c телевизором', $2.7, 1)
 
 INSERT INTO dbo.customer (first_name, last_name, email, phone_number)
 VALUES
-    (N'Анатолий', N'Карпов', N'akarpov1919@mail.ru', '79194802931'),
-    (N'Александра', N'Чернышевская', N'chernysh@rambler.ru', '79765550990'),
-    (N'Станислав', N'Ямбаршев', N'stasyan2001@gmail.com', '79377777777'),
-    (N'Игорь', N'Дмитриев', N'garik@yahoo.com', '79322861919')
+    (N'Anatoliy', N'Karpov', N'akarpov1919@mail.ru', '79194802931'),
+    (N'Alexandra', N'Sergeeva', N'alex@rambler.ru', '79765550990'),
+    (N'Slatislav', N'Smith', N'stasyan2001@gmail.com', '79377777777'),
+    (N'Lewis', N'Hammilton', N'garik@yahoo.com', '79322861919')
 
 
 INSERT INTO dbo.booking (customer_id, room_id, check_in_date, check_out_date)
