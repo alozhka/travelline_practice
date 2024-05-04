@@ -90,7 +90,7 @@
    ```csharp
    if (!Guid.TryParse(parts[1], out Guid bookingId))
        {
-           Console.WriteLine("Invalid identifier.");
+           Console.WriteLine("Invalid booking identifier.");
            return;
        }
    ```
@@ -184,20 +184,30 @@
             .Where(b => b.StartDate >= startDate && b.EndDate <= endDate);
    ```
 
-4. BookingService: метод CalculateCancellationPenaltyAmount : 110
+4. BookingService : 80
+   
+   Мы добавляем в отель категорию из списка и потом ищем эту жу категорию в этом же списке.
+   Получается, что категория отеля всегда будет найдена.
+   ```csharp
+        // тут мы выбираем из категорий при создании брони (метод Book)
+        RoomCategory? selectedCategory = _categories.FirstOrDefault(c => c.Name == categoryName);
+        // тут мы находим категорию из списка при раблоте с бронью (метод CancelBooking)
+        RoomCategory category = _categories.First(c => c.Name == booking.RoomCategory.Name);
+   ```
 
-   Это не проблема бизнес логики, но, честно говоря, не знаю, куда её отнести.
+5. AccommodationProcessor : 100
 
-   Убрал проверку, при которой нельзя отменить бронь во время заезда и позже.
-   Так как мы вызываем подсчёт штрафа в тандеме с методами,
-   которые делают валидацию, то по сути будет выполняться двойная проверка.
-   Я убрал из метода это условие:
-    ```csharp 
-    if (DateTime.Now <= startDate)
-    {
-        throw new ArgumentException("Can`t book earlier than the current time");
-    }
-    ```
+   Не было `return` после проверки индекса. Получалось так, что ошибка выводилась,
+   но при этом запускалась отмена несуществующей команды с индексом 0.
+   
+   ```csharp
+   case "undo":
+       if (_commandIndex < 1)
+       {
+           Console.WriteLine("There are no commands left to undo");
+           return;
+       }
+   ```
 
 # Работа с поиском
 

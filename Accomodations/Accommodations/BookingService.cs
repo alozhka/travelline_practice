@@ -77,7 +77,7 @@ public class BookingService : IBookingService
 
         Console.WriteLine($"Refund of {booking.Cost} {booking.Currency}");
         _bookings.Remove(booking);
-        RoomCategory? category = _categories.FirstOrDefault(c => c.Name == booking.RoomCategory.Name);
+        RoomCategory category = _categories.First(c => c.Name == booking.RoomCategory.Name);
         category.AvailableRooms++;
     }
 
@@ -107,6 +107,11 @@ public class BookingService : IBookingService
 
     public decimal CalculateCancellationPenaltyAmount(Booking booking)
     {
+        if (DateTime.Now <= booking.StartDate)
+        {
+            throw new ArgumentException("Can`t book earlier than the current time");
+        }
+
         int daysBeforeArrival = (booking.StartDate - DateTime.Now).Days;
 
         return 5000.0m * GetCurrencyRate(booking.Currency) / daysBeforeArrival;

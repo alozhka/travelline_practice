@@ -1,4 +1,3 @@
-using System.Globalization;
 using Accommodations.Commands;
 using Accommodations.Dto;
 
@@ -84,7 +83,7 @@ public static class AccommodationsProcessor
 
                 if (!Guid.TryParse(parts[1], out Guid bookingId))
                 {
-                    Console.WriteLine("Invalid identifier.");
+                    Console.WriteLine("Invalid booking identifier.");
                     return;
                 }
                 CancelBookingCommand cancelCommand = new(_bookingService, bookingId);
@@ -97,14 +96,15 @@ public static class AccommodationsProcessor
                 if (_commandIndex < 1)
                 {
                     Console.WriteLine("There are no commands left to undo");
+                    return;
                 }
 
                 _executedCommands[_commandIndex].Undo();
                 _executedCommands.Remove(_commandIndex);
                 _commandIndex--;
                 Console.WriteLine("Last command undone.");
-
                 break;
+            
             case "find":
                 if (parts.Length != 2)
                 {
