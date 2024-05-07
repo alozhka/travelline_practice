@@ -21,7 +21,12 @@ const handleHtmlParse = (fileName: string): void => {
 
 type JsonParseData = Record<string, string>
 type NodeStatus = 'unchanged' | 'changed' | 'new' | 'deleted'
-type Nodes = Record<string, NodeStatus>
+type NodeType = {
+	type: NodeStatus,
+	oldValue?: any,
+	newValue?: any
+}
+type Nodes = Record<string, NodeType>
 
 const handleJsonDifference = (firstJsonFileName: string, secondJsonFileName: string): void => {
 	try {
@@ -30,19 +35,35 @@ const handleJsonDifference = (firstJsonFileName: string, secondJsonFileName: str
 
 		const jsonDiff: Nodes = {}
 		for (const key in firstJson) {
-			if (firstJson[key] === secondJson[key])
-				jsonDiff[key] = 'unchanged'
+			const firstValue = firstJson[key]
+			const secondValue = secondJson[key]
+			if (firstValue === secondValue)
+				jsonDiff[key] = {
+					type: 'unchanged',
+					oldValue: firstValue,
+					newValue: secondValue
+				}
 
 			if (firstJson[key] !== secondJson[key])
-				jsonDiff[key] = 'changed'
+				jsonDiff[key] = {
+					type: 'changed',
+					oldValue: firstValue,
+					newValue: secondValue
+				}
 
 			if (!(key in secondJson))
-				jsonDiff[key] = 'deleted'
+				jsonDiff[key] = {
+					type: 'deleted',
+					oldValue: firstValue
+				}
 		}
 
 		for (const key in secondJson) {
 			if (!(key in jsonDiff))
-				jsonDiff[key] = 'new'
+				jsonDiff[key] = {
+					type: 'new',
+					newValue: secondJson[key]
+				}
 		}
 
 		console.log(jsonDiff)
@@ -50,6 +71,7 @@ const handleJsonDifference = (firstJsonFileName: string, secondJsonFileName: str
 		handleError(e)
 	}
 }
+
 
 const handleError = (e: unknown): void => {
 	if (typeof e === 'object' && e !== null && 'message' in e) {
