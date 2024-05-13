@@ -1,0 +1,12 @@
+{
+  "Title": "Interstellar",
+  "prop1": {
+    "Year": "2014",
+    "prop2": {
+      "Rated": "PG-13",
+      "prop3": {
+        "Actors": ["Ellen", "Mackenzie Foy", "John"]
+      }
+    }
+  }
+}
