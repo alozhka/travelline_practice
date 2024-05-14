@@ -57,7 +57,7 @@ function findJsonDifference(oldJson: any, newJson: any): Record<string, Differen
 				// если сложный объект
 				else {
 					differences[key] = {
-						type: oldJson[key] === newJson[key] ? 'unchanged' : 'changed',
+						type: JSON.stringify(oldJson[key]) === JSON.stringify(newJson[key]) ? 'unchanged' : 'changed',
 						children: findJsonDifference(oldJson[key], newJson[key])
 					}
 				}
