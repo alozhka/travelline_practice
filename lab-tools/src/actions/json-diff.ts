@@ -6,8 +6,7 @@ type JsonParseData = Record<string, unknown>
 const findFilesJsonDifference = (firstJsonFileName: string, secondJsonFileName: string): Differences => {
 		const firstJson: JsonParseData = JSON.parse(fs.readFileSync(firstJsonFileName, { encoding: 'utf8' }))
 		const secondJson: JsonParseData = JSON.parse(fs.readFileSync(secondJsonFileName, { encoding: 'utf8' }))
-
-
+	
 		return findJsonDifference(firstJson, secondJson)
 }
 
@@ -37,7 +36,7 @@ function findJsonDifference(oldJson: Record<string, unknown>, newJson: Record<st
 				}
 			} else if (areObjects(oldJson[key], newJson[key])) { // оба объекты
 				differences[key] = findObjectDifference(oldJson[key] as Record<string, unknown>, 
-					newJson[key] as Record<string, unknown>) // прокидываю тоже, как объекты
+					newJson[key] as Record<string, unknown>) // прокидываю тоже как объекты
 			} else if (oldJson[key] !== newJson[key]) { // единый тип, либо разный
 				differences[key] = {
 					type: 'changed',

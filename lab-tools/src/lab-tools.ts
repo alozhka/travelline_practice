@@ -8,8 +8,8 @@ const program = new Command()
 program.command('html-resources')
 	.argument('<fileName>', 'a file name to parse')
 	.action((fileName: string) => {
-		const result: string[] = parseHtml(fileName)
-		console.log(result)
+		const result: Set<string> = parseHtml(fileName)
+		console.log(Array.from(result))
 	})
 
 program.command('json-diff')
