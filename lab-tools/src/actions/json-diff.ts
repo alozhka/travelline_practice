@@ -24,32 +24,27 @@ type ArrayDifference = {
 }
 type Differences = Record<string, Difference>
 
-//TODO: переписать с any на unknown
-function findJsonDifference(oldJson: any, newJson: any): Record<string, Difference> {
-	const differences: Record<string, Difference> = {}
 
-	if (typeof oldJson !== 'object' || typeof newJson !== 'object') {
-		throw new Error('Invalid JSON')
-	}
+function findJsonDifference(oldJson: Record<string, unknown>, newJson: Record<string, unknown>): Record<string, Difference> {
+	const differences: Record<string, Difference> = {}
 
 	for (const key in oldJson) {
 		if (oldJson.hasOwnProperty(key)) {
-			if (!newJson.hasOwnProperty(key)) {
+			if (!newJson.hasOwnProperty(key)) { // есть в первом, но нет во втором
 				differences[key] = {
 					type: 'delete',
 					oldValue: oldJson[key]
 				}
-			} else if (areObjects(oldJson[key], newJson[key])) {
-				differences[key] = findObjectDifference(oldJson[key], newJson[key])
-				// единый тип, либо разный
-			} else if (oldJson[key] !== newJson[key]) {
+			} else if (areObjects(oldJson[key], newJson[key])) { // оба объекты
+				differences[key] = findObjectDifference(oldJson[key] as Record<string, unknown>, 
+					newJson[key] as Record<string, unknown>) // прокидываю тоже, как объекты
+			} else if (oldJson[key] !== newJson[key]) { // единый тип, либо разный
 				differences[key] = {
 					type: 'changed',
 					oldValue: oldJson[key],
 					newValue: newJson[key]
 				}
-				// единый тип 
-			} else {
+			} else { // единый тип 
 				differences[key] = {
 					type: 'unchanged',
 					oldValue: oldJson[key],
@@ -60,7 +55,7 @@ function findJsonDifference(oldJson: any, newJson: any): Record<string, Differen
 	}
 
 	for (const key in newJson) {
-		if (newJson.hasOwnProperty(key) && !oldJson.hasOwnProperty(key)) {
+		if (!oldJson.hasOwnProperty(key) && newJson.hasOwnProperty(key)) {
 			differences[key] = {
 				type: 'new',
 				newValue: newJson[key]
