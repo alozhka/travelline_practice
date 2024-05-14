@@ -40,27 +40,7 @@ function findJsonDifference(oldJson: any, newJson: any): Record<string, Differen
 					oldValue: oldJson[key]
 				}
 			} else if (areObjects(oldJson[key], newJson[key])) {
-				// если простые объекты или простые массивы
-				if (areSimpleObjects(oldJson[key], newJson[key])) {
-					// если оба - массивы
-					if (everyHasArray(oldJson[key], newJson[key])) {
-						differences[key] = findArrayDifference(oldJson[key],  newJson[key])
-					} else {
-						// либо оба - простые объекты, либо один из них - массив
-						differences[key] = {
-							type: oldJson[key] === newJson[key] ? 'unchanged' : 'changed',
-							oldValue: oldJson[key],
-							newValue: newJson[key]
-						}
-					}
-				}
-				// если сложный объект
-				else {
-					differences[key] = {
-						type: JSON.stringify(oldJson[key]) === JSON.stringify(newJson[key]) ? 'unchanged' : 'changed',
-						children: findJsonDifference(oldJson[key], newJson[key])
-					}
-				}
+				differences[key] = findObjectDifference(oldJson[key], newJson[key])
 				// единый тип, либо разный
 			} else if (oldJson[key] !== newJson[key]) {
 				differences[key] = {
@@ -119,18 +99,14 @@ const areSimpleObjects = (...objects: object[]): boolean => {
 
 
 //TODO: дописать
-/*
-const findObjectDifference = (oldObj: object,  newObj: object): Difference => {
+const findObjectDifference = (oldObj: Record<string, unknown>,  newObj: Record<string, unknown>): Difference => {
 	let diff: Difference;
 	
 	// если простые объекты или простые массивы
 	if (areSimpleObjects(oldObj, newObj)) {
 		// если оба - массивы
-		for (const obj of oldObj) {
-			
-		}
-		if () {
-			diff = findArrayDifference(oldObj, newObj)
+		if (everyHasArray(oldObj, newObj)) {
+			diff = findArrayDifference(oldObj as Record<string, unknown[]>,  newObj as Record<string, unknown[]>)
 		} else {
 			// либо оба - простые объекты, либо один из них - массив
 			diff = {
@@ -143,14 +119,13 @@ const findObjectDifference = (oldObj: object,  newObj: object): Difference => {
 	// если сложный объект
 	else {
 		diff = {
-			type: oldObj === newObj ? 'unchanged' : 'changed',
+			type: JSON.stringify(oldObj) === JSON.stringify(newObj) ? 'unchanged' : 'changed',
 			children: findJsonDifference(oldObj, newObj)
 		}
 	}
 	
 	return diff
 }
-*/
 
 
 const findArrayDifference = (firstObj: Record<string, unknown[]>, secondObj: Record<string, unknown[]>): Difference => {
