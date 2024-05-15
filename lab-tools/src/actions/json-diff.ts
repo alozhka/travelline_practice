@@ -24,142 +24,42 @@ type ArrayDifference = {
 type Differences = Record<string, Difference>
 
 
+const isObject = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null
+
 function findJsonDifference(oldJson: Record<string, unknown>, newJson: Record<string, unknown>): Record<string, Difference> {
 	const differences: Record<string, Difference> = {}
-
-	for (const key in oldJson) {
-		if (oldJson.hasOwnProperty(key)) {
-			if (!newJson.hasOwnProperty(key)) { // есть в первом, но нет во втором
-				differences[key] = {
-					type: 'delete',
-					oldValue: oldJson[key]
-				}
-			} else if (areObjects(oldJson[key], newJson[key])) { // оба объекты
-				differences[key] = findObjectDifference(oldJson[key] as Record<string, unknown>, 
-					newJson[key] as Record<string, unknown>) // прокидываю тоже как объекты
-			} else if (oldJson[key] !== newJson[key]) { // единый тип, либо разный
-				differences[key] = {
-					type: 'changed',
-					oldValue: oldJson[key],
-					newValue: newJson[key]
-				}
-			} else { // единый тип 
-				differences[key] = {
-					type: 'unchanged',
-					oldValue: oldJson[key],
-					newValue: newJson[key]
-				}
-			}
-		}
-	}
-
-	for (const key in newJson) {
-		if (!oldJson.hasOwnProperty(key) && newJson.hasOwnProperty(key)) {
+	const keys = [...Object.keys(oldJson), ...Object.keys(newJson)] 
+	
+	for (const key of keys) {
+		const oldValue = oldJson[key]
+		const newValue = newJson[key]
+		
+		if (oldValue === undefined) {
 			differences[key] = {
 				type: 'new',
-				newValue: newJson[key]
+				newValue: newValue
 			}
-		}
-	}
-	return differences
-}
-
-const everyHasArray = (...objects: object[]): boolean => {
-	for (const object of objects) {
-		if (!Array.isArray(Object.values(object)[0])) {
-			return false
-		}
-	}
-	
-	return true
-}
-
-const areObjects = (...list: any[]): boolean => {
-	for (const el of list) {
-		if (typeof el !== 'object') {
-			return false
-		}
-	}
-	
-	return true;
-}
-
-const areSimpleObjects = (...objects: object[]): boolean => {
-	for (const obj of objects) {
-		if (Object.keys(obj).length !== 1) return false
-	}
-	return true
-}
-
-
-//TODO: дописать
-const findObjectDifference = (oldObj: Record<string, unknown>,  newObj: Record<string, unknown>): Difference => {
-	let diff: Difference;
-	
-	// если простые объекты или простые массивы
-	if (areSimpleObjects(oldObj, newObj)) {
-		// если оба - массивы
-		if (everyHasArray(oldObj, newObj)) {
-			diff = findArrayDifference(oldObj as Record<string, unknown[]>,  newObj as Record<string, unknown[]>)
-		} else {
-			// либо оба - простые объекты, либо один из них - массив
-			diff = {
-				type: oldObj === newObj ? 'unchanged' : 'changed',
-				oldValue: oldObj,
-				newValue: newObj
-			}
-		}
-	}
-	// если сложный объект
-	else {
-		diff = {
-			type: JSON.stringify(oldObj) === JSON.stringify(newObj) ? 'unchanged' : 'changed',
-			children: findJsonDifference(oldObj, newObj)
-		}
-	}
-	
-	return diff
-}
-
-
-const findArrayDifference = (firstObj: Record<string, unknown[]>, secondObj: Record<string, unknown[]>): Difference => {
-	const diff: ArrayDifference = {
-		type: 'unchanged',
-		children: {}
-	}
-	const first: unknown[] = Object.values(firstObj)[0]
-	const second: unknown[] = Object.values(secondObj)[0]
-	
-	
-	const maxLength = Math.max(first.length, second.length)
-	for (let i = 0; i < maxLength; i++) {
-		const oldVal = first[i]
-		const newVal = second[i]
-		
-		let type: DifferenceType;
-		if (oldVal === undefined) {
-			diff.children[i.toString()] = {
-				type: 'new',
-				newValue: newVal
-			}
-		}
-		else if (newVal === undefined) {
-			diff.children[i.toString()] = {
+		} else if (newValue === undefined) {
+			differences[key] = {
 				type: 'delete',
-				oldValue: oldVal
+				oldValue: oldValue
+			}
+		} else if (isObject(oldValue) && isObject(newValue)) {
+			differences[key] = {
+				type: JSON.stringify(oldValue) === JSON.stringify(newValue) ? 'unchanged' : 'changed',
+				children: findJsonDifference(oldValue, newValue)
 			}
 		}
-		else 
-			diff.children[i.toString()] = {
-				type: oldVal === newVal ? 'unchanged' : 'changed',
-				oldValue: oldVal,
-				newValue: newVal
+		else {
+			differences[key] = {
+				type: oldJson[key] === newJson[key] ? 'unchanged' : 'changed',
+				oldValue: oldValue,
+				newValue: newValue
 			}
-
-		
+		}
 	}
 	
-	return diff
+	return differences
 }
 
 
