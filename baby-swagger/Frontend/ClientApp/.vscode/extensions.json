@@ -1,0 +1,17 @@
+{
+  "recommendations": [
+    "shardulm94.trailing-spaces",
+    "usernamehw.errorlens",
+    "yzhang.markdown-all-in-one",
+    "shd101wyy.markdown-preview-enhanced",
+    "kisstkondoros.vscode-codemetrics",
+    "Orta.vscode-jest",
+    "unifiedjs.vscode-mdx",
+    "yoavbls.pretty-ts-errors",
+    // linters
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "DavidAnson.vscode-markdownlint",
+    "streetsidesoftware.code-spell-checker"
+  ]
+}

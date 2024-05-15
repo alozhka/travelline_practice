@@ -1,0 +1,18 @@
+﻿services:
+  api:
+    image: api
+    build:
+      context: .
+      dockerfile: Api/Dockerfile
+
+  frontend:
+    image: frontend
+    build:
+      context: .
+      dockerfile: Frontend/Dockerfile
+
+  frontend-1:
+    image: frontend-1
+    build:
+      context: .
+      dockerfile: Frontend/Dockerfile

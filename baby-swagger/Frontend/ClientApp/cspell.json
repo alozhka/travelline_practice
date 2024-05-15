@@ -1,0 +1,8 @@
+{
+  "dictionaries": ["companies", "misc", "softwareTerms", "npm", "node", "typescript", "html", "css", "customWords"],
+  "dictionaryDefinitions": [{ "name": "customWords", "path": "./.words.txt" }],
+  "ignorePaths": ["dist", "node_modules", "package.json", "package-lock.json", "README.md"],
+  "language": "en_US",
+  "useGitignore": true,
+  "version": "0.2"
+}
