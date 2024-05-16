@@ -1,6 +1,5 @@
 import "./style.css";
-import createTitle from './components/title/title.ts'
-import createEndpoints from './components/endpoints/endpoints.ts'
+import createEndpoints, { addEndpointListener } from './components/endpoints/endpoints.ts'
 
 const createHtmlNode = (htmlString: string | string[]) => {
   const placeholder = document.createElement("div");
@@ -14,17 +13,19 @@ const createHtml = async (): Promise<string> => {
     method: 'GET'
   }).then(res => res.json())
 
-  const rawTitleHTML: string = createTitle(swagger.info.title, swagger.info.version)
   const endpoints: string[] = createEndpoints(swagger.paths)
 
-  return `${rawTitleHTML}${endpoints.join("\n")}`.trim().replace('\n', '')
+  return endpoints.join("\n").trim().replace('\n', '')
 }
 
 
 (async () => {
   const appDiv = document.querySelector<HTMLDivElement>("#app");
-  const node = createHtmlNode(await createHtml());
+  const node: NodeListOf<ChildNode> = createHtmlNode(await createHtml());
   if (appDiv && node) {
-    node.forEach(el => appDiv.append(el))
+    node.forEach(el => { 
+      appDiv.append(el)
+      addEndpointListener(el as HTMLElement)
+    })
   }
 })();
