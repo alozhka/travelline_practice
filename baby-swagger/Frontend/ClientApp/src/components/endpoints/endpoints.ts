@@ -36,10 +36,11 @@ const createEndpoints = (endpoints: Endpoints): string[] => {
 
 
 const toggleEndpointInfo = (event: Event) => {
-  const arrow = event.target as HTMLImageElement
-  arrow.getRootNode()
+  const endpointHeader = event.currentTarget as HTMLDivElement
+  const arrow = endpointHeader.getElementsByTagName('img')[0]
   arrow.classList.toggle("arrow-expand")
-  console.log(arrow)
+  
+  console.log(endpointHeader)
 }
 
 const addEndpointListener = (endpoint: HTMLElement) => {
