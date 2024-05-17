@@ -19,21 +19,36 @@ textarea {
 .route-get {
   background: rgba(97, 175, 254, 0.1);
   border-color: #61affe;
+  h4 span::after {
+    background: rgba(97, 175, 254, 0.8);
+  }
 }
 
 .route-post {
   background: rgba(73,204,144,.1);
   border-color: #49cc90;
+
+  h4 span::after {
+    background: #49cc90;
+  }
 }
 
 .route-put {
   background: rgba(252,161,48,.1);
   border-color: #fca130;
+
+  h4 span::after {
+    background: #fca130;
+  }
 }
 
 .route-delete {
   background: rgba(249,62,62,.1);
   border-color: #f93e3e;
+
+  h4 span::after {
+    background: #f93e3e;
+  }
 }
 
 .route-header {

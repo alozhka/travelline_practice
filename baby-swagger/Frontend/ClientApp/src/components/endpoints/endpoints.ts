@@ -1,5 +1,6 @@
 import arrowIcon from './icon-arrow-up.svg'
 import './endpoints.styles.css'
+import createOpBlock from '../opblock/opblock.ts'
 
 type EndpointData = {
   tags: string[]
@@ -16,6 +17,8 @@ const createEndpoints = (endpoints: Endpoints): string[] => {
   const rawEndpointsHTML: string[] = []
   for (const path in endpoints) {
     for (const method in endpoints[path]) {
+      const opBlock: string = createOpBlock()
+      
       rawEndpointsHTML.push(
         `
         <div id="route-${path}" class="route route-${method}">
@@ -26,6 +29,7 @@ const createEndpoints = (endpoints: Endpoints): string[] => {
               <div class="route-summary-arrow"><img class="arrow" src=${arrowIcon} alt="arrow up"/></div>
             </button>
           </div>
+          ${opBlock}
         </div>
         `)
     }
@@ -38,7 +42,9 @@ const createEndpoints = (endpoints: Endpoints): string[] => {
 const toggleEndpointInfo = (event: Event) => {
   const endpointHeader = event.currentTarget as HTMLDivElement
   const arrow = endpointHeader.getElementsByTagName('img')[0]
+  const opBlock = (endpointHeader.parentNode as HTMLElement).getElementsByClassName('opBlock')[0]
   arrow.classList.toggle("arrow-expand")
+  opBlock.classList.toggle("hidden")
   
   console.log(endpointHeader)
 }
