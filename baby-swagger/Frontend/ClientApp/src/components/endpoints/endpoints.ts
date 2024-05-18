@@ -1,9 +1,10 @@
 import arrowIcon from './icon-arrow-up.svg'
 import './endpoints.styles.css'
-import createOpBlock from '../opblock/opblock.ts'
+import createOpBlock, { Parameter } from '../opblock/opblock.ts'
 
 type EndpointData = {
-  tags: string[]
+  tags: string[],
+  parameters: Parameter[] | undefined
   requestBody: {
     content: object
   }
@@ -17,17 +18,17 @@ const createEndpoints = (endpoints: Endpoints): string[] => {
   const rawEndpointsHTML: string[] = []
   for (const path in endpoints) {
     for (const method in endpoints[path]) {
-      const opBlock: string = createOpBlock()
+      const opBlock: string = createOpBlock(path, method, endpoints[path][method].parameters)
       
       rawEndpointsHTML.push(
         `
         <div id="route-${path}" class="route route-${method}">
           <div class="route-header">
-            <button class="route-summary">
+            <div class="route-summary">
               <div class="route-summary-method route-summary-method-${method}">${method}</div>
               <span class="route-summary-path">${path}</span>
               <div class="route-summary-arrow"><img class="arrow" src=${arrowIcon} alt="arrow up"/></div>
-            </button>
+            </div>
           </div>
           ${opBlock}
         </div>
@@ -45,8 +46,6 @@ const toggleEndpointInfo = (event: Event) => {
   const opBlock = (endpointHeader.parentNode as HTMLElement).getElementsByClassName('opBlock')[0]
   arrow.classList.toggle("arrow-expand")
   opBlock.classList.toggle("hidden")
-  
-  console.log(endpointHeader)
 }
 
 const addEndpointListener = (endpoint: HTMLElement) => {

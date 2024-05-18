@@ -14,12 +14,15 @@ textarea {
   border: 1px solid #000;
   border-radius: 4px;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.19);
+  button {
+    cursor: pointer;
+  }
 }
 
 .route-get {
   background: rgba(97, 175, 254, 0.1);
   border-color: #61affe;
-  h4 span::after {
+  button, > span::after {
     background: rgba(97, 175, 254, 0.8);
   }
 }
@@ -28,7 +31,7 @@ textarea {
   background: rgba(73,204,144,.1);
   border-color: #49cc90;
 
-  h4 span::after {
+  button, > span::after {
     background: #49cc90;
   }
 }
@@ -37,7 +40,7 @@ textarea {
   background: rgba(252,161,48,.1);
   border-color: #fca130;
 
-  h4 span::after {
+  button, > span::after {
     background: #fca130;
   }
 }
@@ -46,7 +49,7 @@ textarea {
   background: rgba(249,62,62,.1);
   border-color: #f93e3e;
 
-  h4 span::after {
+  button, > span::after {
     background: #f93e3e;
   }
 }
