@@ -41,8 +41,8 @@ type Endpoints = Record<string, Endpoint>;
 const createEndpoints = (endpoints: Endpoints, components: Components): string[] => {
   const rawEndpointsHTML: string[] = []
   for (const path in endpoints) {
-    for (const method in endpoints[path]) {
-      const opBlock: string = createOpBlock(path, method, endpoints[path][method], components)
+    for (const [method, endpoint] of Object.entries(endpoints[path])) {
+      const opBlock: string = createOpBlock(path, method, endpoint, components)
       
       rawEndpointsHTML.push(
         `
@@ -78,6 +78,6 @@ const addEndpointListener = (endpoint: HTMLElement) => {
 }
 
 
-export type { EndpointData, Schema, Components }
+export type { EndpointData, Schema, Components, Parameter }
 export { addEndpointListener }
 export default createEndpoints

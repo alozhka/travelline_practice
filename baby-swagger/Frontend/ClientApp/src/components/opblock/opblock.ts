@@ -1,26 +1,23 @@
 import './opblock.styles.css'
-import { Components, EndpointData, Schema } from '../endpoints/endpoints.ts'
+import { Components, EndpointData, Schema, Parameter } from '../endpoints/endpoints.ts'
 
 
 const createOpBlock = (path: string, method: string, endpoint: EndpointData, components: Components): string => {
-  const parameters: string[] | '' = endpoint.parameters ? endpoint.parameters.map(p => 
-  `
-    <div class="opBlock-parameter">
-      <div>
-        <div class="opBlock-parameter__title">${p.name}  <span class="${p.required && 'required'}">*</span></div>
-        <div class="opBlock-parameter__type">${p.schema.type}</div>
-      </div>
-      <div>      
-        <input id="param!${path}!${method}" class="opBlock-parameter__input" placeholder="${p.name}"/>
-      </div>
-    </div>
-  `) : ''
+  const parameters: string[] | '' = endpoint.parameters ? mapParamsToHTMLString(path, method, endpoint.parameters): ''
   
-  let requestBody: Record<string, string> = {} 
+  let requestBody: string = ''
   if (endpoint.requestBody) {
-    const schemaRef: string = Object.values(endpoint.requestBody.content)[0].schema.$ref
+    const schemaRef: string = Object.values(endpoint.requestBody.content)[0].schema.$ref.split('/').pop()
     const requestSchema: Schema = components.schemas[schemaRef]
-    requestBody = SchemaToObject(requestSchema, components.schemas)
+    const rawRequestBody = JSON.stringify(SchemaToObject(requestSchema, components.schemas), null, 2)
+    requestBody =
+    `
+    <div class="opBlock-section-header">
+      <h4 class="opBlock-title"><span>Request body:</span></h4>
+    </div>
+    <div class="opBlock-requestBody">
+      <div role="textbox" contenteditable="true"><pre id="requestBody!${path}|${method}">${rawRequestBody}</pre></div>
+    </div>`
   }
   
   return `
@@ -32,10 +29,8 @@ const createOpBlock = (path: string, method: string, endpoint: EndpointData, com
       <div class="opBlock-parameters">
             ${parameters}
       </div>
-      <div class="opBlock-parameters">
-            ${requestBody}
-      </div>
     </div>
+    ${requestBody}
     <button class="opBlock-button">Execute</button>
     <div class="opBlock-result"></div>
   </div>
@@ -43,7 +38,7 @@ const createOpBlock = (path: string, method: string, endpoint: EndpointData, com
 }
 
 
-const SchemaToObject = (schema: Schema, otherShemas: Record<string, Schema>): Record<string, string> => {
+const SchemaToObject = (schema: Schema, otherSchemas: Record<string, Schema>): Record<string, string> => {
   const obj: Record<string, string> = {}
   for (const key in schema.properties) {
     if (Object.keys(schema.properties[key])[0] !== '$ref') {
@@ -51,11 +46,26 @@ const SchemaToObject = (schema: Schema, otherShemas: Record<string, Schema>): Re
     }
     else {
       obj[key] = schema.properties[key][0]
+      otherSchemas;
     }
   }
   
   return obj
 }
-  
+
+const mapParamsToHTMLString = (path: string, method: string, params: Parameter[]): string[] => {
+  return params.map(p =>
+    `
+    <div class="opBlock-parameter">
+      <div>
+        <div class="opBlock-parameter__title">${p.name}  <span class="${p.required && 'required'}">*</span></div>
+        <div class="opBlock-parameter__type">${p.schema.type}</div>
+      </div>
+      <div>      
+        <input id="param!${path}!${method}" class="opBlock-parameter__input" placeholder="${p.name}"/>
+      </div>
+    </div>
+  `)
+}
 
 export default createOpBlock
