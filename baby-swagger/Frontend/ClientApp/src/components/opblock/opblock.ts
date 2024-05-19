@@ -3,15 +3,14 @@ import { Components, EndpointData, Schema, Parameter } from '../endpoints/endpoi
 
 
 const createOpBlock = (path: string, method: string, endpoint: EndpointData, components: Components): string => {
-  const parameters: string[] | '' = endpoint.parameters ? mapParamsToHTMLString(path, method, endpoint.parameters): ''
+  const parameters: string[] | '' = endpoint.parameters ? mapParamsToHTMLString(path, method, endpoint.parameters) : ''
   
   let requestBody: string = ''
   if (endpoint.requestBody) {
     const schemaRef: string = Object.values(endpoint.requestBody.content)[0].schema.$ref.split('/').pop()
     const requestSchema: Schema = components.schemas[schemaRef]
     const rawRequestBody = JSON.stringify(SchemaToObject(requestSchema, components.schemas), null, 2)
-    requestBody =
-    `
+    requestBody = `
     <div class="opBlock-section-header">
       <h4 class="opBlock-title"><span>Request body:</span></h4>
     </div>
