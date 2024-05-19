@@ -1,24 +1,48 @@
 import arrowIcon from './icon-arrow-up.svg'
 import './endpoints.styles.css'
-import createOpBlock, { Parameter } from '../opblock/opblock.ts'
+import createOpBlock from '../opblock/opblock.ts'
 
 type EndpointData = {
   tags: string[],
   parameters: Parameter[] | undefined
-  requestBody: {
+  requestBody?: {
     content: object
   }
-  responses: Record<string, { description: string }>
 }
+
+type Parameter = {
+  name: string,
+  required: boolean,
+  schema: {
+    type: string
+  }
+}
+
+type Schema = {
+  properties: Record<string, string>,
+  type?: {
+    properties: Record<string, {
+      minLength?: number
+      type: string,
+      $ref: string
+    }>,
+  },
+  enum?: Record<number | 'type', number | string>,
+  
+}
+type Components = {
+  schemas: Record<string, Schema>
+}
+
 type Endpoint = Record<string, EndpointData>
 type Endpoints = Record<string, Endpoint>;
 
 
-const createEndpoints = (endpoints: Endpoints): string[] => {
+const createEndpoints = (endpoints: Endpoints, components: Components): string[] => {
   const rawEndpointsHTML: string[] = []
   for (const path in endpoints) {
     for (const method in endpoints[path]) {
-      const opBlock: string = createOpBlock(path, method, endpoints[path][method].parameters)
+      const opBlock: string = createOpBlock(path, method, endpoints[path][method], components)
       
       rawEndpointsHTML.push(
         `
@@ -54,6 +78,6 @@ const addEndpointListener = (endpoint: HTMLElement) => {
 }
 
 
-export type { Endpoints }
+export type { EndpointData, Schema, Components }
 export { addEndpointListener }
 export default createEndpoints

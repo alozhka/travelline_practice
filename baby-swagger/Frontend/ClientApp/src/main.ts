@@ -13,7 +13,7 @@ const createHtml = async (): Promise<string> => {
     method: 'GET'
   }).then(res => res.json())
 
-  const endpoints: string[] = createEndpoints(swagger.paths)
+  const endpoints: string[] = createEndpoints(swagger.paths, swagger.components)
 
   return endpoints.join("\n").trim().replace('\n', '')
 }

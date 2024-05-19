@@ -1,15 +1,9 @@
 import './opblock.styles.css'
+import { Components, EndpointData, Schema } from '../endpoints/endpoints.ts'
 
-type Parameter = {
-  name: string,
-  required: boolean,
-  schema: {
-    type: string
-  }
-}
 
-const createOpBlock = (path: string, method: string, params: Parameter[] | undefined): string => {
-  const parameters: string[] | '' = params ? params.map(p => 
+const createOpBlock = (path: string, method: string, endpoint: EndpointData, components: Components): string => {
+  const parameters: string[] | '' = endpoint.parameters ? endpoint.parameters.map(p => 
   `
     <div class="opBlock-parameter">
       <div>
@@ -22,6 +16,13 @@ const createOpBlock = (path: string, method: string, params: Parameter[] | undef
     </div>
   `) : ''
   
+  let requestBody: Record<string, string> = {} 
+  if (endpoint.requestBody) {
+    const schemaRef: string = Object.values(endpoint.requestBody.content)[0].schema.$ref
+    const requestSchema: Schema = components.schemas[schemaRef]
+    requestBody = SchemaToObject(requestSchema, components.schemas)
+  }
+  
   return `
   <div class="opBlock hidden">
     <div class="opBlock-section">
@@ -31,6 +32,9 @@ const createOpBlock = (path: string, method: string, params: Parameter[] | undef
       <div class="opBlock-parameters">
             ${parameters}
       </div>
+      <div class="opBlock-parameters">
+            ${requestBody}
+      </div>
     </div>
     <button class="opBlock-button">Execute</button>
     <div class="opBlock-result"></div>
@@ -39,5 +43,19 @@ const createOpBlock = (path: string, method: string, params: Parameter[] | undef
 }
 
 
-export type { Parameter }
+const SchemaToObject = (schema: Schema, otherShemas: Record<string, Schema>): Record<string, string> => {
+  const obj: Record<string, string> = {}
+  for (const key in schema.properties) {
+    if (Object.keys(schema.properties[key])[0] !== '$ref') {
+      obj[key] = key
+    }
+    else {
+      obj[key] = schema.properties[key][0]
+    }
+  }
+  
+  return obj
+}
+  
+
 export default createOpBlock
