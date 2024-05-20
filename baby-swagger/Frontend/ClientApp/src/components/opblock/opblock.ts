@@ -10,25 +10,26 @@ const createOpBlock = (endpoint: Endpoint): string => {
 
   let requestBody: string = ''
   if (endpoint.requestBody) {
-    const rawRequestBody = JSON.stringify(PropertiesToObject(endpoint.requestBody.properties), null, 2)
+    const rawRequestBody = JSON.stringify(propertiesToObject(endpoint.requestBody.properties), null, 2)
     requestBody = `
     <div class="opBlock-section-header">
       <h4 class="opBlock-title"><span>Request body:</span></h4>
     </div>
     <div class="opBlock-requestBody">
       <div role="textbox" contenteditable="true">
-        <pre id="requestBody!${endpoint.path}|${endpoint.method}">${rawRequestBody}</pre>
+        <pre id="requestBody!${endpoint.path}!${endpoint.method}">${rawRequestBody}</pre>
       </div>
     </div>`
   }
   
   const controlButtons: string = createControlButtons(endpoint.path, endpoint.method)
   const responseArea: string = `
-  <div class="opBlock-section-header">
-      <h4 class="opBlock-title"><span>Request body:</span></h4>
-  </div>
-  ${createResponseArea(endpoint.path)}
-  `
+    <div id="responseArea!${endpoint.path}!${endpoint.method}" class="hidden">
+      <div class="opBlock-section-header">
+            <h4 class="opBlock-title"><span>Request body:</span></h4>
+        </div>
+        ${createResponseArea(endpoint.path)}
+    </div>`
   
   return `
   <div class="opBlock hidden">
@@ -48,7 +49,7 @@ const createOpBlock = (endpoint: Endpoint): string => {
 }
 
 
-const PropertiesToObject = (props: RequestProperties): object => {
+const propertiesToObject = (props: RequestProperties): object => {
   const obj: RequestProperties = {}
   for (const [key, value] of Object.entries(props)) {
     obj[key] = value
@@ -66,10 +67,12 @@ const mapParamsToHTMLStrings = (path: string, method: string, params: Parameter[
         <div class="opBlock-parameter__type">${p.schema.type}</div>
       </div>
       <div>      
-        <input id="param!${path}!${method}" class="opBlock-parameter__input" placeholder="${p.name}"/>
+        <input id="param!${path}!${method}!${p.name}" class="opBlock-parameter__input" placeholder="${p.name}"/>
       </div>
     </div>
   `)
 }
 
+
+export { propertiesToObject }
 export default createOpBlock

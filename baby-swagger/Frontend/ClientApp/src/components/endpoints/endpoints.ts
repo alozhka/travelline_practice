@@ -12,7 +12,10 @@ const createEndpoints = (endpoints: Endpoint[]): string[] => {
 
     rawEndpointsHTML.push(
       `
-        <div id="route-${endpoint.path}" class="route route-${endpoint.method}">
+        <div method="${endpoint.method}"
+             path="${endpoint.path}" 
+             id="route-${endpoint.path}!${endpoint.method}" 
+             class="route route-${endpoint.method}">
           <div class="route-header">
             <div class="route-summary">
               <div class="route-summary-method route-summary-method-${endpoint.method}">${endpoint.method}</div>
