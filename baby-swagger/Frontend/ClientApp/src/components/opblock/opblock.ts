@@ -1,6 +1,7 @@
 import './opblock.styles.css'
 import { Endpoint, Parameter, RequestProperties } from '../../types.ts'
 import createControlButtons from '../control-buttons/controlButtons.ts'
+import createResponseArea from '../response-area/responseArea.ts'
 
 
 const createOpBlock = (endpoint: Endpoint): string => {
@@ -22,6 +23,12 @@ const createOpBlock = (endpoint: Endpoint): string => {
   }
   
   const controlButtons: string = createControlButtons(endpoint.path, endpoint.method)
+  const responseArea: string = `
+  <div class="opBlock-section-header">
+      <h4 class="opBlock-title"><span>Request body:</span></h4>
+  </div>
+  ${createResponseArea(endpoint.path)}
+  `
   
   return `
   <div class="opBlock hidden">
@@ -35,7 +42,7 @@ const createOpBlock = (endpoint: Endpoint): string => {
     </div>
     ${requestBody}
     ${controlButtons}
-    <div class="opBlock-result"></div>
+    ${responseArea}
   </div>
   `
 }

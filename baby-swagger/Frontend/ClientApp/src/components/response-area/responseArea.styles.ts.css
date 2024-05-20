@@ -1,0 +1,16 @@
+.response-area-wrapper {
+  margin: 20px;
+  
+  h4 {
+    margin: 10px 0 2px 0;
+  }
+  code {
+    padding: 8px;
+    display: inline-block;
+    width: calc(100% - 2 * 8px);
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    background: black;
+  }
+}
