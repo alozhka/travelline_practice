@@ -1,0 +1,30 @@
+.control-buttons-wrapper {
+  display: flex;
+  flex-direction: row;
+  padding: 20px;
+  color: white;
+}
+
+.control-buttons-execute {
+  width: 100%;
+}
+
+.control-buttons-expand {
+  .control-buttons-execute {
+    width: 50%;
+    border-radius: 4px 0 0 4px!important;
+  }
+  .control-buttons-clear {
+    display: block;
+  }
+}
+
+.control-buttons-clear {
+  border: 2px solid gray;
+  border-radius: 0 4px 4px 0!important;
+  color: #3b4151!important;
+  background-color: rgba(0, 0, 0, 0)!important;
+  
+  display: none;
+  width: 50%;
+}

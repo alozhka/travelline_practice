@@ -16,13 +16,21 @@ textarea {
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.19);
   button {
     cursor: pointer;
+    color: white;
+    border-radius: 4px;
+    font-weight: 700;
+    padding: 8px 40px;
+    background-color: #4990e2;
+  }
+  button:hover {
+    box-shadow: 0 0 5px rgba(0,0,0,.3);
   }
 }
 
 .route-get {
   background: rgba(97, 175, 254, 0.1);
-  border-color: #61affe;
-  button, span::after {
+  border-color: #61affe; 
+  span::after {
     background: rgba(97, 175, 254, 0.8);
   }
 }
@@ -31,7 +39,7 @@ textarea {
   background: rgba(73,204,144,.1);
   border-color: #49cc90;
 
-  button, span::after {
+  span::after {
     background: #49cc90;
   }
 }
@@ -40,7 +48,7 @@ textarea {
   background: rgba(252,161,48,.1);
   border-color: #fca130;
 
-  button, span::after {
+  span::after {
     background: #fca130;
   }
 }
@@ -49,7 +57,7 @@ textarea {
   background: rgba(249,62,62,.1);
   border-color: #f93e3e;
 
-  button, span::after {
+  span::after {
     background: #f93e3e;
   }
 }

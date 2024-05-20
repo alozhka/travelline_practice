@@ -1,23 +1,27 @@
 import './opblock.styles.css'
-import { Components, EndpointData, Schema, Parameter } from '../endpoints/endpoints.ts'
+import { Endpoint, Parameter, RequestProperties } from '../../types.ts'
+import createControlButtons from '../control-buttons/controlButtons.ts'
 
 
-const createOpBlock = (path: string, method: string, endpoint: EndpointData, components: Components): string => {
-  const parameters: string[] | '' = endpoint.parameters ? mapParamsToHTMLString(path, method, endpoint.parameters) : ''
-  
+const createOpBlock = (endpoint: Endpoint): string => {
+  const parameters: string[] | '' = endpoint.parameters ?
+    mapParamsToHTMLStrings(endpoint.path, endpoint.method, endpoint.parameters) : ''
+
   let requestBody: string = ''
   if (endpoint.requestBody) {
-    const schemaRef: string = Object.values(endpoint.requestBody.content)[0].schema.$ref.split('/').pop()
-    const requestSchema: Schema = components.schemas[schemaRef]
-    const rawRequestBody = JSON.stringify(SchemaToObject(requestSchema, components.schemas), null, 2)
+    const rawRequestBody = JSON.stringify(PropertiesToObject(endpoint.requestBody.properties), null, 2)
     requestBody = `
     <div class="opBlock-section-header">
       <h4 class="opBlock-title"><span>Request body:</span></h4>
     </div>
     <div class="opBlock-requestBody">
-      <div role="textbox" contenteditable="true"><pre id="requestBody!${path}|${method}">${rawRequestBody}</pre></div>
+      <div role="textbox" contenteditable="true">
+        <pre id="requestBody!${endpoint.path}|${endpoint.method}">${rawRequestBody}</pre>
+      </div>
     </div>`
   }
+  
+  const controlButtons: string = createControlButtons(endpoint.path, endpoint.method)
   
   return `
   <div class="opBlock hidden">
@@ -30,29 +34,23 @@ const createOpBlock = (path: string, method: string, endpoint: EndpointData, com
       </div>
     </div>
     ${requestBody}
-    <button class="opBlock-button">Execute</button>
+    ${controlButtons}
     <div class="opBlock-result"></div>
   </div>
   `
 }
 
 
-const SchemaToObject = (schema: Schema, otherSchemas: Record<string, Schema>): Record<string, string> => {
-  const obj: Record<string, string> = {}
-  for (const key in schema.properties) {
-    if (Object.keys(schema.properties[key])[0] !== '$ref') {
-      obj[key] = key
-    }
-    else {
-      obj[key] = schema.properties[key][0]
-      otherSchemas;
-    }
+const PropertiesToObject = (props: RequestProperties): object => {
+  const obj: RequestProperties = {}
+  for (const [key, value] of Object.entries(props)) {
+    obj[key] = value
   }
-  
+
   return obj
 }
 
-const mapParamsToHTMLString = (path: string, method: string, params: Parameter[]): string[] => {
+const mapParamsToHTMLStrings = (path: string, method: string, params: Parameter[]): string[] => {
   return params.map(p =>
     `
     <div class="opBlock-parameter">

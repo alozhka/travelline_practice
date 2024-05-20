@@ -1,5 +1,7 @@
 import "./style.css";
 import createEndpoints, { addEndpointListener } from './components/endpoints/endpoints.ts'
+import { SwaggerData } from './types.ts'
+import { addExecutionListener } from './components/control-buttons/controlButtons.ts'
 
 const createHtmlNode = (htmlString: string | string[]) => {
   const placeholder = document.createElement("div");
@@ -9,12 +11,89 @@ const createHtmlNode = (htmlString: string | string[]) => {
 };
 
 const createHtml = async (): Promise<string> => {
-  const swagger = await fetch('http://localhost:5154/swagger/v1/swagger.json', {
-    method: 'GET'
-  }).then(res => res.json())
-
-  const endpoints: string[] = createEndpoints(swagger.paths, swagger.components)
-
+  const swagger: SwaggerData = {
+    endpoints: [
+      {
+        path: '/Users',
+        method: 'get'
+      },
+      {
+        path: '/Users',
+        method: 'post',
+        requestBody: {
+          contentType: 'application/json',
+          properties: {
+            firstName: 'string',
+            lastName: 'string',
+            email: 'string',
+            role: 'int'
+          }
+        }
+      },
+      {
+        path: '/Users/{id}',
+        method: 'get',
+        parameters: [
+          {
+            name: 'id',
+            required: true,
+            schema: {
+              type: 'int'
+            }
+          }
+        ]
+      },
+      {
+        path: '/Users/{id}',
+        method: 'put',
+        parameters: [
+          {
+            name: 'id',
+            required: true,
+            schema: {
+              type: 'int'
+            }
+          }
+        ],
+        requestBody: {
+          contentType: 'application/json',
+          properties: {
+            firstName: 'string',
+            lastName: 'string',
+            role: 'number'
+          }
+        }
+      },
+      {
+        path: '/Users/{id}',
+        method: 'delete',
+        parameters: [
+          {
+            name: 'id',
+            required: true,
+            schema: {
+              type: 'int'
+            }
+          }
+        ]
+      },
+      {
+        path: '/Users/get-by-email/{email}',
+        method: 'get',
+        parameters: [
+          {
+            name: 'email',
+            required: true,
+            schema: {
+              type: 'string'
+            }
+          }
+        ]
+      }
+    ]
+  }
+  const endpoints: string[] = createEndpoints(swagger.endpoints)
+  
   return endpoints.join("\n").trim().replace('\n', '')
 }
 
@@ -26,6 +105,7 @@ const createHtml = async (): Promise<string> => {
     node.forEach(el => { 
       appDiv.append(el)
       addEndpointListener(el as HTMLElement)
+      addExecutionListener(el as HTMLElement)
     })
   }
 })();
