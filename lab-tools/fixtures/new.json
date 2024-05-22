@@ -1,0 +1,5 @@
+{
+  "timeout": 50,
+  "proxy": "888.888.88.88",
+  "host": "google.com"
+}
