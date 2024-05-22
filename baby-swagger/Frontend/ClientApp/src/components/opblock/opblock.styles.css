@@ -1,0 +1,98 @@
+.opBlock {
+  
+}
+
+.opBlock-section {
+}
+
+.opBlock-section-header {
+  align-items: center;
+  background: hsla(0,0%,100%,.8);
+  box-shadow: 0 1px 2px rgba(0,0,0,.1);
+  display: flex;
+  min-height: 50px;
+  padding: 8px 20px;
+}
+
+.opBlock-title {
+  max-width: fit-content;
+  color: #3b4151;
+  flex: 1;
+  font-family: sans-serif;
+  font-size: 14px;
+  margin: 0;
+
+  span::after {
+    display: block;
+    content: "";
+    height: 4px;
+  }
+}
+
+.opBlock-parameters {
+  padding: 20px;
+}
+
+.opBlock-parameter {
+  min-width: 6em;
+  padding: 10px 0;
+  display: flex;
+  justify-content: left;
+}
+.opBlock-parameter__input {
+  background: #fff;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  margin: 5px 0;
+  min-width: 100px;
+  padding: 8px 10px;
+}
+
+.opBlock-parameter__title {
+  color: #3b4151;
+  font-family: sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  margin-right: .75em;
+}
+
+.opBlock-parameter__type {
+  color: #3b4151;
+  font-family: monospace;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 0;
+}
+
+.required {
+  color: rgba(255,0,0,.6);
+}
+
+.required::after {
+  content: "required";
+  font-size: 10px;
+  padding: 5px;
+  background-color: hsla(0, 0%, 100%, 0)!important;
+  position: relative;
+  top: -6px;
+}
+
+.opBlock-requestBody {
+  margin: 20px;
+  
+  div {
+    background: white;
+    border-radius: 4px;
+    border: 1px solid #d9d9d9;
+    width: 100%;
+    resize: none;
+    min-height: min-content;
+  }
+}
+
+.opBlock-execute {
+}
+
+.hidden {
+  display: none;
+}
