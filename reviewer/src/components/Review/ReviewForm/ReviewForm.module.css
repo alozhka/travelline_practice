@@ -27,7 +27,27 @@
 }
 
 .dataInsertion {
-    div:first-child {
-        margin-bottom: 27px;
+    display: flex;
+    flex-direction: column;
+    
+    textarea {
+        font-family: Inter, sans-serif;
+        font-size: 14px;
+        
+        resize: none;
+        margin-top: 27px;
+        padding: 3px;
+        height: 113px;
+        
+        background: none;
+        color: #909090;
+        border: #dcdcdc 1px solid;
+        border-radius: 5px;
     }
+}
+
+.submitButton {
+    background: #c0c0c0;
+    color: white;
+    margin: 20px 0 0 calc(100% - 120px);
 }

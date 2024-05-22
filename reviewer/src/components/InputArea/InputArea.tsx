@@ -1,14 +1,15 @@
 import s from './InputArea.module.css';
+import { ForwardedRef, forwardRef } from 'react'
 
 
 interface InputAreaProps {
 	header?: string,
-	type: 'name' | 'comment', // на будущее
+	type: 'name' // на будущее
 	placeholder?: string
 }
 
 
-const InputArea = (props: InputAreaProps) => {
+const InputArea = forwardRef((props: InputAreaProps, ref: ForwardedRef<HTMLInputElement>) => {
 	const classes = `${s.inputArea} ${s[props.type]}`
 	return (
 		<div className={s.inputArea}>
@@ -17,10 +18,10 @@ const InputArea = (props: InputAreaProps) => {
 					<p>{props.header}</p>
                 </div>
 			}
-			<input className={classes} type="text" placeholder={props.placeholder}/>
+			<input ref={ref} className={classes} type="text" placeholder={props.placeholder}/>
 		</div>
 	)
-}
+})
 
 
 export default InputArea
