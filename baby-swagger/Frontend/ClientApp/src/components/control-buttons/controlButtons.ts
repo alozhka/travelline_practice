@@ -1,6 +1,7 @@
 import './controlButtons.styles.css'
 import { Endpoint } from '../../types.ts'
 import { propertiesToObject } from '../opblock/opblock.ts'
+import { renderResponse } from '../response-area/responseArea.ts'
 
 
 const createControlButtons = (path: string, method: string): string => {
@@ -21,9 +22,14 @@ const addExecutionListener = (el: HTMLElement, endpoint: Endpoint) => {
     const buttonsArea = (e.currentTarget as HTMLButtonElement).parentElement || undefined
     buttonsArea?.classList.add('control-buttons-expand')
     responseArea.classList.remove('hidden')
-    
+
     const body = requestBody ? requestBody.innerHTML : null
-    const response = await executeRequest(endpoint.path, endpoint.method, body)
+    const parameter = endpoint.parameters &&
+      document.getElementById(`param!${endpoint.path}!${endpoint.method}!${endpoint.parameters[0].name}`) as HTMLInputElement
+    const response = await executeRequest(
+      endpoint.path, 
+      endpoint.method, (endpoint.parameters && parameter) ? {name: endpoint.parameters[0].name, value: parameter.value} : null, 
+      body)
     await renderResponse(responseArea, response)
   })
 
@@ -43,25 +49,19 @@ const addExecutionListener = (el: HTMLElement, endpoint: Endpoint) => {
 
 }
 
-const executeRequest = async (path: string, method: string, body: string | null): Promise<Response> => {
-  return fetch(`http://localhost:5154${path}`, {
+const executeRequest = async (
+  path: string, 
+  method: string, 
+  parameter: {name: string, value: string} | null, 
+  body: string | null): Promise<Response> => {
+  const executePath = parameter ? 
+    `http://localhost:5154${path}`.replace(`{${parameter.name}}`, parameter.value) :
+    `http://localhost:5154${path}`
+  return fetch(executePath, {
     method,
+    headers: body ? { 'Content-Type': 'application/json' } : undefined,
     body
   })
-}
-
-
-const renderResponse = async (responseArea: HTMLDivElement, response: Response): Promise<void> => {
-  const wrappers = Array.from(responseArea.getElementsByTagName('code'));
-  let headers = ''
-  response.headers.forEach((value:string, key: string) => {
-    headers += `${key}: ${value}\n`
-  })
-  
-  wrappers[0].innerText = response.url
-  wrappers[1].innerText = `${response.status} ${response.statusText}`
-  wrappers[2].innerText = JSON.stringify(await response.json(), null, 2)
-  wrappers[3].innerText = headers
 }
 
 
