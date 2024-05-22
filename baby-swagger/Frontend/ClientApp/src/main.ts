@@ -104,12 +104,9 @@ const createHtml = async (): Promise<string> => {
   const appDiv = document.querySelector<HTMLDivElement>("#app");
   const node: NodeListOf<ChildNode> = createHtmlNode(await createHtml());
   if (appDiv && node) {
-    node.forEach(el => { 
+    node.forEach((el, index) => { 
       appDiv.append(el)
-      const method = (el as HTMLElement).attributes.getNamedItem('method')?.nodeValue
-      const path = (el as HTMLElement).attributes.getNamedItem('path')?.nodeValue
-      
-      const endpoint = swagger.endpoints.filter(e => e.path === path && e.method === method)[0]
+      const endpoint = swagger.endpoints[index]
       addEndpointListener(el as HTMLElement)
       addExecutionListener(el as HTMLElement, endpoint)
     })

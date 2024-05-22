@@ -24,7 +24,7 @@ const addExecutionListener = (el: HTMLElement, endpoint: Endpoint) => {
     
     const body = requestBody ? requestBody.innerHTML : null
     const response = await executeRequest(endpoint.path, endpoint.method, body)
-    renderResponse(responseArea, response)
+    await renderResponse(responseArea, response)
   })
 
   const clearButton = el.getElementsByClassName('control-buttons-clear')[0]
@@ -37,7 +37,7 @@ const addExecutionListener = (el: HTMLElement, endpoint: Endpoint) => {
   if (endpoint.requestBody) {
     const props = endpoint.requestBody.properties
     clearButton.addEventListener('click', () => {
-      requestBody.innerHTML = JSON.stringify(propertiesToObject(props), null, 2)
+      requestBody && (requestBody.innerHTML = JSON.stringify(propertiesToObject(props), null, 2))
     })
   }
 

@@ -10,12 +10,8 @@ const createEndpoints = (endpoints: Endpoint[]): string[] => {
   endpoints.forEach((endpoint) => {
     const opBlock: string = createOpBlock(endpoint)
 
-    rawEndpointsHTML.push(
-      `
-        <div method="${endpoint.method}"
-             path="${endpoint.path}" 
-             id="route-${endpoint.path}!${endpoint.method}" 
-             class="route route-${endpoint.method}">
+    rawEndpointsHTML.push(`
+        <div id="route-${endpoint.path}!${endpoint.method}" class="route route-${endpoint.method}">
           <div class="route-header">
             <div class="route-summary">
               <div class="route-summary-method route-summary-method-${endpoint.method}">${endpoint.method}</div>
