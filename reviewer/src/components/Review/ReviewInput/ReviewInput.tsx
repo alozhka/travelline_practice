@@ -1,4 +1,4 @@
-import React, { forwardRef, ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { forwardRef, ReactNode, useRef, useState } from 'react'
 
 import s from './ReviewInput.module.css'
 import angryFace from './images/twemoji_angry-face.svg'
@@ -13,7 +13,6 @@ type RangeState = {
 	emojiUrl: string
 }
 
-//TODO: переделать на хештеги из фигмы
 const rangeStates: RangeState[] = [
 	{ color: '#F24E1E', emojiUrl: angryFace },
 	{ color: '#FF8311', emojiUrl: slightlyFrowningFace },
@@ -32,7 +31,7 @@ const ReviewInput = forwardRef((props: ReviewInputProps, ref: React.ForwardedRef
 	const closingBarRef = useRef<HTMLDivElement>(null)
 	const [rangePoints, setRangePoints] = useState<ReactNode[]>([])
 	
-	const handleChange = () => {
+	const adjustRenderComponents = () => {
 		if (statusBarRef.current && closingBarRef.current && ref !== null && 'current' in ref && ref.current) {
 			const currentIndex = ref.current.valueAsNumber - 1
 			statusBarRef.current.style.backgroundColor = rangeStates[currentIndex].color
@@ -55,7 +54,7 @@ const ReviewInput = forwardRef((props: ReviewInputProps, ref: React.ForwardedRef
 	return (
 		<div className={s.wrapper}>
 			<input ref={ref} type="range" min="1" max="5" step="1" 
-				onChangeCapture={handleChange} name={props.category}/>
+				onChangeCapture={adjustRenderComponents} name={props.category}/>
 			<div ref={statusBarRef} className={s.statusBar}></div>
 			<div ref={closingBarRef} className={`${s.statusBar} ${s.closingBar}`}></div>
 			<div className={s.rangePoints}>{rangePoints}</div>
