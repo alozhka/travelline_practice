@@ -2,14 +2,15 @@
     position: relative;
     width: 160px;
     height: 6px;
-    top: 16px;
+    top: 8px;
     
     border-radius: 10px;
     border: #dcdcdc 1px solid;
 }
 
 .closingBar {
-    top: 8px
+    background: white;
+    top: 0
 }
 
 .wrapper {
@@ -25,10 +26,10 @@
 .rangePoints {
     position: relative;
     display: flex;
-    bottom: 2px;
-    left: 1px;
+    align-items: center;
+    bottom: 14px;
     
-    width: 160px;
+    width: 165px;
     height: 20px;
     justify-content: space-between;
 }
@@ -39,4 +40,9 @@
     border-radius: 50%;
     border: #dcdcdc 1px solid;
     background: white;
+}
+
+.rangePointImage {
+    width: 20px;
+    height: 20px;
 }
