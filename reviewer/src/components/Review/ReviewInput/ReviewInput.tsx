@@ -29,7 +29,12 @@ interface ReviewInputProps {
 const ReviewInput = forwardRef((props: ReviewInputProps, ref: React.ForwardedRef<HTMLInputElement>) => {
 	const statusBarRef = useRef<HTMLDivElement>(null)
 	const closingBarRef = useRef<HTMLDivElement>(null)
-	const [rangePoints, setRangePoints] = useState<ReactNode[]>([])
+	const [rangePoints, setRangePoints] = useState<ReactNode[]>(
+		rangeStates.map((_, i) =>
+			<div key={`range${props.category}${i}`} className={s.rangePoint} style={{
+				backgroundColor: rangeStates[i].color
+			}}></div>
+	))
 	
 	const adjustRenderComponents = () => {
 		if (statusBarRef.current && closingBarRef.current && ref !== null && 'current' in ref && ref.current) {
@@ -50,7 +55,6 @@ const ReviewInput = forwardRef((props: ReviewInputProps, ref: React.ForwardedRef
 		}
 	}
 
-	
 	return (
 		<div className={s.wrapper}>
 			<input ref={ref} type="range" min="1" max="5" step="1" 
