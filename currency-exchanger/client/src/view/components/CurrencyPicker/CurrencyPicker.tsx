@@ -1,6 +1,9 @@
 import React, { forwardRef } from 'react';
 import { Currency } from '../../../core/types.ts';
 
+import s from './CurrencyPicker.module.css'
+
+
 interface PickerProps {
   currencies: Currency[];
   currentIndex: number;
@@ -8,11 +11,11 @@ interface PickerProps {
 
 const CurrencyPicker = forwardRef((props: PickerProps, ref: React.ForwardedRef<HTMLInputElement>) => {
   return (
-    <div>
+    <div className={s.wrapper}>
       <input ref={ref} />
-      <select>
-        {props.currencies.map(((currency, index) => 
-          <option key={index} value={currency.code}>{currency.name}</option>))
+      <select defaultValue={props.currencies[props.currentIndex].code}>
+        { props.currencies.map((currency =>
+          <option key={currency.code} value={currency.code}>{currency.code}</option>))
         }
         </select>
     </div>
