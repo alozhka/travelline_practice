@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import { useCallback, useEffect, useState } from 'react';
 
 const useFetch = <T>(url: string, refetchInterval?: number): [T | undefined, boolean] => {
     const [data, setData] = useState<T | undefined>(undefined)
@@ -11,7 +11,6 @@ const useFetch = <T>(url: string, refetchInterval?: number): [T | undefined, boo
       .then(data => {
         setData(data)
         setLoading(false)
-        console.log(data)
       })
   }
 
@@ -25,4 +24,14 @@ const useFetch = <T>(url: string, refetchInterval?: number): [T | undefined, boo
 
   return [data, loading];
 };
-export { useFetch }
+
+
+function useToggle(initialState: any) {
+  const [isToggled, setIsToggled] = useState(initialState);
+  const toggle = useCallback(() => setIsToggled(!isToggled), [isToggled]);
+
+  return [isToggled, toggle]
+}
+
+
+export { useFetch, useToggle }

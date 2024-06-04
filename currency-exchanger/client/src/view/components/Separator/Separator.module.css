@@ -1,0 +1,34 @@
+.separator {
+    width: 100%;
+    height: 2px;
+    margin: 30px;
+
+    background: #f2f3f5;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.button {
+    width: max(200px, 30%);
+    height: 50px;
+    background: #f2f3f5;
+    
+    padding: 10px;
+    
+    display: flex;
+    justify-content: space-around;
+    place-items: center;
+    
+    border-radius: 15px;
+}
+
+.arrowUp {
+    width: 20px;
+    height: 20px;
+}
+
+.rotate {
+    transform: rotate(180deg);
+}

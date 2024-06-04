@@ -1,19 +1,24 @@
 import React, { forwardRef } from 'react';
-import { Currency } from '../../../core/types.ts';
+import { Currency, CurrencyInfo } from '../../../core/types.ts';
 
 import s from './CurrencyPicker.module.css'
 
 
 interface PickerProps {
-  currencies: Currency[];
-  currentIndex: number;
+  currencies: CurrencyInfo[];
+  currency: Currency;
+  onInputChange?: (newAmount: number) => void;
 }
+
+
 
 const CurrencyPicker = forwardRef((props: PickerProps, ref: React.ForwardedRef<HTMLInputElement>) => {
   return (
     <div className={s.wrapper}>
-      <input ref={ref} />
-      <select defaultValue={props.currencies[props.currentIndex].code}>
+      <input ref={ref} type='number' 
+             onChange={() => props.onInputChange && props.onInputChange(ref?.current.valueAsNumber)} 
+             defaultValue={props.currency.amount} />
+      <select defaultValue={props.currency.code}>
         { props.currencies.map((currency =>
           <option key={currency.code} value={currency.code}>{currency.code}</option>))
         }

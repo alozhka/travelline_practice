@@ -11,10 +11,3 @@
     align-items: center;
     flex-direction: column;
 }
-
-.separator {
-    width: 100%;
-    height: 2px;
-
-    background: #9e9e9e;
-}
