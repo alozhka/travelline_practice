@@ -19,7 +19,7 @@ const CurrencyPicker = forwardRef((props: PickerProps, ref: React.ForwardedRef<H
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.valueAsNumber;
     if(props.onInputChange && ref && 'current' in ref && ref.current && value >= 0) {
-      ref.current.valueAsNumber = value
+      ref.current.value = value.toFixed(2)
       props.onInputChange(value)
     }
   }
@@ -33,7 +33,7 @@ const CurrencyPicker = forwardRef((props: PickerProps, ref: React.ForwardedRef<H
     <div className={s.wrapper}>
       <input ref={ref} type='number' min='0'
              onChange={handleChange}
-             defaultValue={props.currency.amount} />
+             value={props.currency.amount} />
       <select value={props.currency.code}
               ref={selectRef}
               onChange={handleSelect}>

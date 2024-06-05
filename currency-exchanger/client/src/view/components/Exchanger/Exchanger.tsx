@@ -1,13 +1,12 @@
 import s from './Exchanger.module.css';
-import { format } from 'date-fns';
 import CurrencyPicker from '../CurrencyPicker/CurrencyPicker.tsx';
 import { useFetch, useToggle } from '../../../core/hooks.ts';
 import { CurrencyPair, CurrencyType, GetCurrencyRequest } from '../../../core/types.ts';
 import { useEffect, useRef, useState } from 'react';
 import Separator from '../Separator/Separator.tsx';
 import CurrencyPreview from '../CurrencyPreview/CurrencyPreview.tsx';
-
-const getFormattedCurrentDate = () => format(new Date(), 'EEE, dd MMM yyyy HH:mm')
+import { getFormattedCurrentDate } from '../../../core/utils.ts';
+import { fetchCurrentExchange } from '../../../core/requests.ts';
 
 
 const Exchanger = () => {
@@ -19,38 +18,45 @@ const Exchanger = () => {
 
   useEffect(() => {
     if (currencies)
-      setPair({ 
+      setPair({
         purchased: {...currencies[0], amount: 0},
         payment: {...currencies[1], amount: 0}
       })
   }, [isLoading])
-  
+
   if (isLoading) // если загрузка
     return <span>Загрузка</span>
-  
+
   if (!currencies || currencies.length === 0) // загрузили и получили ошибку
     return <span>Ошибка</span>
-  
+
   if (pair) {
-    const handleInputChange = (a: number, type: CurrencyType) => {
+    const handleInputChange = async(newAmount: number, type: CurrencyType) => {
+      const rate = await fetchCurrentExchange(pair.purchased.code, pair.payment.code)
       switch (type) {
         case CurrencyType.Purchased:
-          setPair({ ...pair, purchased: {...pair.purchased, amount: a }})
+          setPair({ payment: {...pair.payment, amount: newAmount / rate}, purchased: {...pair.purchased, amount: newAmount}})
           break
         case CurrencyType.Payment:
-          setPair({ ...pair, payment: {...pair.payment, amount: a }})
+          setPair({ purchased: {...pair.purchased, amount: newAmount * rate}, payment: {...pair.payment, amount: newAmount}})
       }
     }
-    const handleSelect = (code: string, type: CurrencyType) => {
+    const handleSelect = async(code: string, type: CurrencyType) => {
       const newCurrency = currencies.find((c) => c.code === code)
-      if (!newCurrency || Object.values(pair).some(c => c.code === code)) return
+      if (!newCurrency) return
 
+      if(Object.values(pair).some(c => c.code === code)) {
+        setPair({purchased: pair.payment, payment: pair.purchased})
+        return;
+      }
       switch (type) {
         case CurrencyType.Purchased:
-          setPair({ ...pair, purchased: { ...newCurrency, amount: 0 } })
+          const ratePurchased = await fetchCurrentExchange(newCurrency.code, pair.payment.code)
+          setPair({ ...pair, purchased: { ...newCurrency, amount: pair.payment.amount * ratePurchased } })
           break
         case CurrencyType.Payment:
-          setPair({ ...pair, payment: { ...newCurrency, amount: 0 } })
+          const ratePayment = await fetchCurrentExchange(pair.purchased.code, newCurrency.code)
+          setPair({ ...pair, payment: { ...newCurrency, amount: pair.purchased.amount / ratePayment } })
       }
     }
     return (

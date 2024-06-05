@@ -21,6 +21,13 @@ const enum CurrencyType {
     Payment
 }
 
+type ExchangeRate = {
+    purchasedCurrencyCode: string,
+    paymentCurrencyCode: string,
+    price: number,
+    dateTime: Date
+}
 
-export type { GetCurrencyRequest, CurrencyInfo, Currency, CurrencyPair }
+
+export type { GetCurrencyRequest, CurrencyInfo, Currency, CurrencyPair, ExchangeRate }
 export { CurrencyType }

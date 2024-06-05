@@ -26,7 +26,7 @@ const useFetch = <T>(url: string, refetchInterval?: number): [T | undefined, boo
 };
 
 
-function useToggle(initialState: any) {
+function useToggle(initialState: boolean): [boolean, () => void] {
   const [isToggled, setIsToggled] = useState(initialState);
   const toggle = useCallback(() => setIsToggled(!isToggled), [isToggled]);
 
