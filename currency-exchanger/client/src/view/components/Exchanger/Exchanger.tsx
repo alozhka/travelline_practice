@@ -2,7 +2,7 @@ import s from './Exchanger.module.css';
 import { format } from 'date-fns';
 import CurrencyPicker from '../CurrencyPicker/CurrencyPicker.tsx';
 import { useFetch, useToggle } from '../../../core/hooks.ts';
-import { CurrencyPair, GetCurrencyRequest } from '../../../core/types.ts';
+import { CurrencyPair, CurrencyType, GetCurrencyRequest } from '../../../core/types.ts';
 import { useEffect, useRef, useState } from 'react';
 import Separator from '../Separator/Separator.tsx';
 import CurrencyPreview from '../CurrencyPreview/CurrencyPreview.tsx';
@@ -31,30 +31,55 @@ const Exchanger = () => {
   if (!currencies || currencies.length === 0) // загрузили и получили ошибку
     return <span>Ошибка</span>
   
-  if (pair) return (
-    <div className={s.wrapper}>
-      <header>
-        <h5>1 {currencies[0].name} is</h5>
-        <h3>{currencies[1].name}</h3>
-        <span>{getFormattedCurrentDate()} UTC</span>
-      </header>
-      <CurrencyPicker ref={purchasedRef} currencies={currencies} onInputChange={(a: number) =>
-        setPair({...pair, purchased: {...pair.purchased, amount: a }})
-      } currency={pair.purchased} />
-      <CurrencyPicker ref={paymentRef} currencies={currencies} onInputChange={(a: number) =>
-        setPair({...pair, payment: {...pair.payment, amount: a }})
-      }  currency={pair.payment} />
-      <Separator paymentCurrencyCode={pair.purchased.code}
-                 purchasedCurrencyCode={pair.payment.code}
-                 onClick={() => toggle()} />
-      { isToggled &&
-        <>
-          <CurrencyPreview currency={pair.purchased} />
-          <CurrencyPreview currency={pair.payment} />
-        </>
+  if (pair) {
+    const handleInputChange = (a: number, type: CurrencyType) => {
+      switch (type) {
+        case CurrencyType.Purchased:
+          setPair({ ...pair, purchased: {...pair.purchased, amount: a }})
+          break
+        case CurrencyType.Payment:
+          setPair({ ...pair, payment: {...pair.payment, amount: a }})
       }
-    </div>
-  ) 
+    }
+    const handleSelect = (code: string, type: CurrencyType) => {
+      const newCurrency = currencies.find((c) => c.code === code)
+      if (!newCurrency) return
+
+      switch (type) {
+        case CurrencyType.Purchased:
+          setPair({ ...pair, purchased: { ...newCurrency, amount: 0 } })
+          break
+        case CurrencyType.Payment:
+          setPair({ ...pair, payment: { ...newCurrency, amount: 0 } })
+      }
+    }
+    return (
+      <div className={s.wrapper}>
+        <header>
+          <h5>1 {currencies[0].name} is</h5>
+          <h3>{currencies[1].name}</h3>
+          <span>{getFormattedCurrentDate()} UTC</span>
+        </header>
+        <CurrencyPicker ref={purchasedRef} currencies={currencies}
+                        onInputChange={(a) => handleInputChange(a, CurrencyType.Purchased)}
+                        onSelectChange={(code: string) => handleSelect(code, CurrencyType.Purchased)}
+                        currency={pair.purchased} />
+        <CurrencyPicker ref={paymentRef} currencies={currencies}
+                        onInputChange={(a) => handleInputChange(a, CurrencyType.Payment)}
+                        onSelectChange={(code: string) => handleSelect(code, CurrencyType.Payment)}
+                        currency={pair.payment} />
+        <Separator paymentCurrencyCode={pair.purchased.code}
+                   purchasedCurrencyCode={pair.payment.code}
+                   onClick={() => toggle()} />
+        {isToggled &&
+          <>
+            <CurrencyPreview currency={pair.purchased} />
+            <CurrencyPreview currency={pair.payment} />
+          </>
+        }
+      </div>
+    )
+  }
 }
 
-export default Exchanger;
+export default Exchanger

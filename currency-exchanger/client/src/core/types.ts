@@ -16,5 +16,11 @@ type CurrencyPair = {
     payment: Currency,
 }
 
+const enum CurrencyType {
+    Purchased,
+    Payment
+}
+
 
 export type { GetCurrencyRequest, CurrencyInfo, Currency, CurrencyPair }
+export { CurrencyType }
