@@ -43,7 +43,7 @@ const Exchanger = () => {
     }
     const handleSelect = (code: string, type: CurrencyType) => {
       const newCurrency = currencies.find((c) => c.code === code)
-      if (!newCurrency) return
+      if (!newCurrency || Object.values(pair).some(c => c.code === code)) return
 
       switch (type) {
         case CurrencyType.Purchased:

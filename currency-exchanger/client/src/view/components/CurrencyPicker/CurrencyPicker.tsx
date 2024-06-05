@@ -15,17 +15,17 @@ interface PickerProps {
 
 const CurrencyPicker = forwardRef((props: PickerProps, ref: React.ForwardedRef<HTMLInputElement>) => {
   const selectRef = useRef<HTMLSelectElement>(null);
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if(props.onInputChange && ref && 'current' in ref && ref.current && e.target.valueAsNumber >= 0) {
-      ref.current.valueAsNumber = e.target.valueAsNumber
-      props.onInputChange(e.target.valueAsNumber)
+    const value = e.target.valueAsNumber;
+    if(props.onInputChange && ref && 'current' in ref && ref.current && value >= 0) {
+      ref.current.valueAsNumber = value
+      props.onInputChange(value)
     }
   }
-
   const handleSelect = () => {
     if (props.onSelectChange && selectRef.current) {
       props.onSelectChange(selectRef.current.value)
-
     }
   }
 
@@ -34,7 +34,7 @@ const CurrencyPicker = forwardRef((props: PickerProps, ref: React.ForwardedRef<H
       <input ref={ref} type='number' min='0'
              onChange={handleChange}
              defaultValue={props.currency.amount} />
-      <select defaultValue={props.currency.code}
+      <select value={props.currency.code}
               ref={selectRef}
               onChange={handleSelect}>
         { props.currencies.map((currency =>
