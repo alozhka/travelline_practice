@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-const useFetch = <T>(url: string, refetchInterval?: number): [T | undefined, boolean] => {
+const useFetch = <T>(url: string, refetchInterval?: number, effectDeps?: unknown[]): [T | undefined, boolean] => {
     const [data, setData] = useState<T | undefined>(undefined)
     const [loading, setLoading] = useState(false)
 
@@ -17,10 +17,10 @@ const useFetch = <T>(url: string, refetchInterval?: number): [T | undefined, boo
   useEffect(() => {
     get()
     if (refetchInterval) {
-      const intervalId = setInterval(() => get(), refetchInterval);
+      const intervalId= setInterval(() => get(), refetchInterval);
       return () => clearInterval(intervalId)
     }
-  }, [url])
+  }, effectDeps ? effectDeps : [url])
 
   return [data, loading];
 };

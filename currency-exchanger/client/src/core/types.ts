@@ -14,6 +14,7 @@ type Currency = CurrencyInfo & {
 type CurrencyPair = {
     purchased: Currency,
     payment: Currency,
+    price: number
 }
 
 const enum CurrencyType {
