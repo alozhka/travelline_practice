@@ -9,8 +9,8 @@ import {
   Legend, ChartData
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { useEffect, useState } from 'react';
 import { ExchangeRate } from '../../../core/types.ts';
+import { useFetch } from '../../../core/hooks.ts';
 
 
 ChartJS.register(
@@ -41,22 +41,13 @@ interface ChartProps {
   paymentCode: string
 }
 const ExchangeRateChart = (props: ChartProps) => {
-  const [exchanges, setExchanges] = useState<ExchangeRate[]>()
-
-  const get = async () => {
-    const date = new Date()
-    date.setMinutes(date.getMinutes() - 5)
-    const response = await fetch(`http://localhost:5081/prices?PaymentCurrency=${props.paymentCode}&PurchasedCurrency=${props.purchasedCode}&FromDateTime=${date.toISOString()}`)
-    const data = await response.json();
-    console.log("chartData:", data);
-    setExchanges(data)
-  }
-
-  useEffect(() => {
-    get()
-    const intervalId = setInterval(() => get(), 10000)
-    return () => clearInterval(intervalId)
-  }, [props.purchasedCode, props.paymentCode]);
+  const date = new Date()
+  date.setMinutes(date.getMinutes() - 5)
+  const [exchanges] = useFetch<ExchangeRate[]>(
+    (`http://localhost:5081/prices?PaymentCurrency=${props.paymentCode}&PurchasedCurrency=${props.purchasedCode}&FromDateTime=${date.toISOString()}`),
+    10000,
+    [props.purchasedCode, props.paymentCode]
+  )
 
   if(!exchanges) return <div>Ошибка</div>
 
